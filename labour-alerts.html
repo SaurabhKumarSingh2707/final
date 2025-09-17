@@ -1,0 +1,432 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Labour Alerts - AgriTech Frontend</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link href="style.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+    <style>
+        .alerts-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .alerts-grid {
+            display: grid;
+            gap: 2rem;
+        }
+        .alert-card {
+            background: var(--bg-primary, #fff);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            border-left: 5px solid #ff6b35;
+        }
+        .alert-card.weather {
+            border-left-color: #2196f3;
+        }
+        .alert-card.market {
+            border-left-color: #4caf50;
+        }
+        .alert-card.government {
+            border-left-color: #ff9800;
+        }
+        .alert-card.labour {
+            border-left-color: #9c27b0;
+        }
+        .alert-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .alert-icon {
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        .alert-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary, #333);
+        }
+        .alert-time {
+            font-size: 0.9rem;
+            color: #666;
+            margin-left: auto;
+        }
+        .alert-content {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        .alert-actions {
+            display: flex;
+            gap: 1rem;
+        }
+        .alert-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .alert-btn.primary {
+            background: #2e7d32;
+            color: #fff;
+        }
+        .alert-btn.secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .alert-btn:hover {
+            transform: translateY(-1px);
+        }
+        .create-alert {
+            background: var(--bg-primary, #fff);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .priority-selector {
+            display: flex;
+            gap: 1rem;
+        }
+        .priority-option {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .priority-option.selected {
+            border-color: #2e7d32;
+            background: #e8f5e8;
+        }
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #ddd;
+            background: transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            border-color: #2e7d32;
+            background: #2e7d32;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="brand">
+                <a href="index.html" class="logo">AgriTech Frontend</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+                <a href="index.html" class="btn btn-primary">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="alerts-container">
+        <div class="tool-header" style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="color: #2e7d32; font-size: 2.5rem;"><i class="fas fa-bell"></i> Labour Alerts & Notifications</h1>
+            <p>Stay updated with weather alerts, market prices, government schemes, and labour scheduling</p>
+        </div>
+
+        <div class="create-alert">
+            <h2><i class="fas fa-plus-circle"></i> Create New Alert</h2>
+            <form id="alertForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="alertTitle">Alert Title</label>
+                        <input type="text" id="alertTitle" placeholder="Enter alert title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="alertCategory">Category</label>
+                        <select id="alertCategory" required>
+                            <option value="">Select category</option>
+                            <option value="weather">Weather Alert</option>
+                            <option value="market">Market Update</option>
+                            <option value="government">Government Scheme</option>
+                            <option value="labour">Labour Scheduling</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="alertContent">Alert Description</label>
+                    <textarea id="alertContent" placeholder="Enter detailed description" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priority Level</label>
+                    <div class="priority-selector">
+                        <div class="priority-option" onclick="selectPriority('low')">
+                            <i class="fas fa-circle" style="color: #4caf50;"></i><br>Low
+                        </div>
+                        <div class="priority-option selected" onclick="selectPriority('medium')">
+                            <i class="fas fa-circle" style="color: #ff9800;"></i><br>Medium
+                        </div>
+                        <div class="priority-option" onclick="selectPriority('high')">
+                            <i class="fas fa-circle" style="color: #f44336;"></i><br>High
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="alert-btn primary" style="padding: 1rem 2rem;">
+                    <i class="fas fa-plus"></i> Create Alert
+                </button>
+            </form>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" onclick="filterAlerts('all')">All Alerts</button>
+            <button class="filter-btn" onclick="filterAlerts('weather')">Weather</button>
+            <button class="filter-btn" onclick="filterAlerts('market')">Market</button>
+            <button class="filter-btn" onclick="filterAlerts('government')">Government</button>
+            <button class="filter-btn" onclick="filterAlerts('labour')">Labour</button>
+        </div>
+
+        <div class="alerts-grid" id="alertsGrid">
+            <!-- Sample alerts will be populated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        let selectedPriority = 'medium';
+        let alerts = [
+            {
+                id: 1,
+                category: 'weather',
+                title: 'Heavy Rainfall Warning',
+                content: 'Heavy to very heavy rainfall expected in the next 24-48 hours. Ensure proper drainage in fields and postpone harvesting activities.',
+                priority: 'high',
+                time: '2 hours ago'
+            },
+            {
+                id: 2,
+                category: 'market',
+                title: 'Wheat Price Update',
+                content: 'Wheat prices have increased by 8% in local mandis. Current rate: ₹2,100 per quintal. Good time to sell stored wheat.',
+                priority: 'medium',
+                time: '4 hours ago'
+            },
+            {
+                id: 3,
+                category: 'government',
+                title: 'PM-KISAN Scheme Alert',
+                content: 'New installment of PM-KISAN scheme will be credited this week. Ensure your Aadhaar is linked to your bank account.',
+                priority: 'medium',
+                time: '1 day ago'
+            },
+            {
+                id: 4,
+                category: 'labour',
+                title: 'Harvest Season Labour Booking',
+                content: 'Reminder: Your harvest season labour booking is scheduled for tomorrow at 6 AM. Contact: Rajesh Kumar - 9876543210',
+                priority: 'high',
+                time: '6 hours ago'
+            },
+            {
+                id: 5,
+                category: 'weather',
+                title: 'Drought Alert',
+                content: 'Low rainfall warning for next 2 weeks. Plan irrigation schedules accordingly and conserve water resources.',
+                priority: 'high',
+                time: '1 day ago'
+            }
+        ];
+
+        function selectPriority(priority) {
+            selectedPriority = priority;
+            document.querySelectorAll('.priority-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function filterAlerts(category) {
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Filter and display alerts
+            const filteredAlerts = category === 'all' ? alerts : alerts.filter(alert => alert.category === category);
+            displayAlerts(filteredAlerts);
+        }
+
+        function displayAlerts(alertsToShow) {
+            const alertsGrid = document.getElementById('alertsGrid');
+            alertsGrid.innerHTML = '';
+
+            alertsToShow.forEach(alert => {
+                const alertCard = document.createElement('div');
+                alertCard.className = `alert-card ${alert.category}`;
+                
+                const iconMap = {
+                    weather: 'fas fa-cloud-rain',
+                    market: 'fas fa-chart-line',
+                    government: 'fas fa-university',
+                    labour: 'fas fa-users'
+                };
+
+                const priorityColors = {
+                    low: '#4caf50',
+                    medium: '#ff9800',
+                    high: '#f44336'
+                };
+
+                alertCard.innerHTML = `
+                    <div class="alert-header">
+                        <i class="${iconMap[alert.category]} alert-icon" style="color: ${priorityColors[alert.priority]};"></i>
+                        <div class="alert-title">${alert.title}</div>
+                        <div class="alert-time">${alert.time}</div>
+                    </div>
+                    <div class="alert-content">${alert.content}</div>
+                    <div class="alert-actions">
+                        <button class="alert-btn primary" onclick="markAsRead(${alert.id})">
+                            <i class="fas fa-check"></i> Mark as Read
+                        </button>
+                        <button class="alert-btn secondary" onclick="shareAlert(${alert.id})">
+                            <i class="fas fa-share"></i> Share
+                        </button>
+                    </div>
+                `;
+                
+                alertsGrid.appendChild(alertCard);
+            });
+        }
+
+        function markAsRead(alertId) {
+            // Remove alert from the list
+            alerts = alerts.filter(alert => alert.id !== alertId);
+            displayAlerts(alerts);
+            
+            // Show success message
+            showNotification('Alert marked as read', 'success');
+        }
+
+        function shareAlert(alertId) {
+            const alert = alerts.find(a => a.id === alertId);
+            if (alert && navigator.share) {
+                navigator.share({
+                    title: alert.title,
+                    text: alert.content,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                const alertText = `${alert.title}\n\n${alert.content}`;
+                navigator.clipboard.writeText(alertText).then(() => {
+                    showNotification('Alert copied to clipboard', 'success');
+                });
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#4caf50' : '#f44336'};
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 8px;
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Handle alert form submission
+        document.getElementById('alertForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('alertTitle').value;
+            const category = document.getElementById('alertCategory').value;
+            const content = document.getElementById('alertContent').value;
+            
+            const newAlert = {
+                id: Date.now(),
+                category: category,
+                title: title,
+                content: content,
+                priority: selectedPriority,
+                time: 'Just now'
+            };
+            
+            alerts.unshift(newAlert);
+            displayAlerts(alerts);
+            
+            // Reset form
+            this.reset();
+            selectedPriority = 'medium';
+            document.querySelectorAll('.priority-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelector('.priority-option:nth-child(2)').classList.add('selected');
+            
+            showNotification('Alert created successfully!', 'success');
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            displayAlerts(alerts);
+            
+            // Theme support
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+        });
+
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); }
+                to { transform: translateX(0); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

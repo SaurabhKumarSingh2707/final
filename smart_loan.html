@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Loan Eligibility Guide - KrishiVaani</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .loan-eligibility-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .loan-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .loan-type-card {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .loan-type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(34, 197, 94, 0.3);
+        }
+
+        .loan-type-card i {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .loan-type-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .loan-type-card p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .eligibility-form {
+            background: #f8fafc;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: #1f2937;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #16a34a, #15803d);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .eligibility-result {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .result-success {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 2px solid #22c55e;
+            color: #15803d;
+        }
+
+        .result-warning {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            color: #92400e;
+        }
+
+        .result-error {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 2px solid #ef4444;
+            color: #dc2626;
+        }
+
+        .loan-info {
+            background: #f0f9ff;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .loan-info h3 {
+            color: #0c4a6e;
+            margin-bottom: 15px;
+        }
+
+        .loan-info ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .loan-info li {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0f2fe;
+        }
+
+        .loan-info li:before {
+            content: "✓";
+            color: #0ea5e9;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .language-selector {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .language-selector select {
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 2px solid white;
+            background: rgba(255, 255, 255, 0.95);
+            color: #1f2937;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            min-width: 160px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .language-selector select:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .language-selector select:focus {
+            outline: none;
+            border-color: #22c55e;
+            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+        }
+
+        /* Adjust Google Translate widget position to avoid overlap */
+        #google_translate_element {
+            bottom: 80px !important;
+            right: 20px !important;
+        }
+
+        @media (max-width: 768px) {
+            .language-selector {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .language-selector select {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+                min-width: 140px;
+            }
+            
+            #google_translate_element {
+                bottom: 70px !important;
+                right: 10px !important;
+            }
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            color: #1f2937;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .loan-eligibility-container {
+                padding: 25px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Back Button -->
+    <a href="dashboard.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+    </a>
+
+    <!-- Top language selector removed as requested -->
+
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-seedling"></i> Smart Loan Eligibility Guide</h1>
+            <p>Get personalized loan recommendations for your farming needs</p>
+        </div>
+
+        <!-- Loan Types Section -->
+        <div class="loan-eligibility-container">
+            <h2 style="text-align: center; margin-bottom: 30px; color: #1f2937;">Choose Your Loan Type</h2>
+            
+            <div class="loan-types">
+                <div class="loan-type-card" data-type="crop">
+                    <i class="fas fa-wheat-awn"></i>
+                    <h3>Crop Cultivation Loan</h3>
+                    <p>For seeds, fertilizers, and crop cultivation expenses</p>
+                </div>
+                <div class="loan-type-card" data-type="equipment">
+                    <i class="fas fa-tractor"></i>
+                    <h3>Farm Equipment Loan</h3>
+                    <p>For purchasing tractors, harvesters, and other machinery</p>
+                </div>
+                <div class="loan-type-card" data-type="water">
+                    <i class="fas fa-tint"></i>
+                    <h3>Water Source Development</h3>
+                    <p>For bore wells, irrigation systems, and water management</p>
+                </div>
+                <div class="loan-type-card" data-type="land">
+                    <i class="fas fa-map"></i>
+                    <h3>Land Purchase Loan</h3>
+                    <p>For purchasing agricultural land and property</p>
+                </div>
+            </div>
+
+            <!-- Loan Information -->
+            <div class="loan-info">
+                <h3><i class="fas fa-info-circle"></i> Important Loan Information</h3>
+                <ul>
+                    <li>Interest rates starting from 7% per annum</li>
+                    <li>Flexible repayment terms up to 10 years</li>
+                    <li>Minimal documentation required</li>
+                    <li>Quick approval process within 7-15 days</li>
+                    <li>Government subsidy schemes available</li>
+                    <li>No processing fees for first-time applicants</li>
+                </ul>
+            </div>
+
+            <!-- Eligibility Form -->
+            <form id="eligibilityForm" class="eligibility-form" style="display: none;">
+                <h3><i class="fas fa-clipboard-check"></i> Eligibility Assessment</h3>
+                
+                <!-- Personal Information -->
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age *</label>
+                            <input type="number" id="age" name="age" min="18" max="80" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Farm Information -->
+                <div class="form-section">
+                    <h3>Farm Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="farmSize">Total Farm Size (acres) *</label>
+                            <input type="number" id="farmSize" name="farmSize" min="0.5" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="landOwnership">Land Ownership *</label>
+                            <select id="landOwnership" name="landOwnership" required>
+                                <option value="">Select...</option>
+                                <option value="owned">Owned</option>
+                                <option value="leased">Leased</option>
+                                <option value="shared">Share Cropping</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cropType">Primary Crop Type *</label>
+                            <select id="cropType" name="cropType" required>
+                                <option value="">Select...</option>
+                                <option value="rice">Rice</option>
+                                <option value="wheat">Wheat</option>
+                                <option value="sugarcane">Sugarcane</option>
+                                <option value="cotton">Cotton</option>
+                                <option value="vegetables">Vegetables</option>
+                                <option value="fruits">Fruits</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="farmingExperience">Farming Experience (years) *</label>
+                            <input type="number" id="farmingExperience" name="farmingExperience" min="1" max="50" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Financial Information -->
+                <div class="form-section">
+                    <h3>Financial Information</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="annualIncome">Annual Farm Income (₹) *</label>
+                            <input type="number" id="annualIncome" name="annualIncome" min="50000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="loanAmount">Loan Amount Required (₹) *</label>
+                            <input type="number" id="loanAmount" name="loanAmount" min="10000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="existingLoans">Existing Agricultural Loans</label>
+                            <select id="existingLoans" name="existingLoans">
+                                <option value="no">No</option>
+                                <option value="yes">Yes</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="bankAccount">Do you have a bank account? *</label>
+                            <select id="bankAccount" name="bankAccount" required>
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Checklist -->
+                <div class="form-section">
+                    <h3>Documents Available</h3>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="aadhar" name="documents" value="aadhar">
+                        <label for="aadhar">Aadhar Card</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="pan" name="documents" value="pan">
+                        <label for="pan">PAN Card</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="landRecords" name="documents" value="landRecords">
+                        <label for="landRecords">Land Records/Revenue Papers</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="incomeProof" name="documents" value="incomeProof">
+                        <label for="incomeProof">Income Proof/ITR</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="bankStatement" name="documents" value="bankStatement">
+                        <label for="bankStatement">Bank Statement (6 months)</label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div style="text-align: center; margin-top: 30px;">
+                    <button type="button" class="btn-secondary" onclick="resetForm()">Reset Form</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-calculator"></i>
+                        Check Eligibility
+                    </button>
+                </div>
+            </form>
+
+            <!-- Eligibility Result -->
+            <div id="eligibilityResult" class="eligibility-result">
+                <div id="resultContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const lang = urlParams.get('lang') || 'en';
+        const preselectedType = urlParams.get('type');
+
+    // Language selector removed, skip setting value
+
+        // Auto-select loan type if passed from dashboard
+        if (preselectedType) {
+            setTimeout(() => {
+                const targetCard = document.querySelector(`[data-type="${preselectedType}"]`);
+                if (targetCard) {
+                    targetCard.click();
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 500);
+        }
+
+        // Loan type selection with error handling
+        document.querySelectorAll('.loan-type-card').forEach(card => {
+            card.addEventListener('click', function() {
+                try {
+                    // Remove active class from all cards
+                    document.querySelectorAll('.loan-type-card').forEach(c => c.style.opacity = '0.7');
+                    
+                    // Add active class to selected card
+                    this.style.opacity = '1';
+                    this.style.transform = 'scale(1.02)';
+                    
+                    // Store selected loan type
+                    const loanType = this.dataset.type;
+                    const form = document.getElementById('eligibilityForm');
+                    
+                    if (!form) {
+                        throw new Error('Eligibility form not found');
+                    }
+                    
+                    form.dataset.loanType = loanType;
+                    
+                    // Show the form
+                    form.style.display = 'block';
+                    form.scrollIntoView({ behavior: 'smooth' });
+                    
+                    // Update form title based on loan type
+                    const formTitle = form.querySelector('h3');
+                    const loanTypeText = this.querySelector('h3').textContent;
+                    
+                    if (formTitle && loanTypeText) {
+                        formTitle.innerHTML = `<i class="fas fa-clipboard-check"></i> ${loanTypeText} - Eligibility Assessment`;
+                    }
+                    
+                    // Show success message
+                    Swal.fire({
+                        title: '✅ Loan Type Selected',
+                        text: `You've selected ${loanTypeText}. Please fill out the form below to check your eligibility.`,
+                        icon: 'success',
+                        timer: 2000,
+                        showConfirmButton: false,
+                        toast: true,
+                        position: 'top-end'
+                    });
+                    
+                } catch (error) {
+                    console.error('Error selecting loan type:', error);
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'There was an issue selecting the loan type. Please try again.',
+                        icon: 'error',
+                        confirmButtonColor: '#22c55e'
+                    });
+                }
+            });
+        });
+
+        // Form submission with enhanced validation
+        document.getElementById('eligibilityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            try {
+                // Validate required fields
+                const requiredFields = this.querySelectorAll('[required]');
+                let isValid = true;
+                let firstInvalidField = null;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.style.borderColor = '#ef4444';
+                        if (!firstInvalidField) {
+                            firstInvalidField = field;
+                        }
+                    } else {
+                        field.style.borderColor = '#22c55e';
+                    }
+                });
+                
+                if (!isValid) {
+                    Swal.fire({
+                        title: 'Missing Information',
+                        text: 'Please fill all required fields marked with *',
+                        icon: 'warning',
+                        confirmButtonColor: '#22c55e'
+                    });
+                    
+                    if (firstInvalidField) {
+                        firstInvalidField.focus();
+                        firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                    return;
+                }
+                
+                // Additional validations
+                const age = parseInt(document.getElementById('age').value);
+                const loanAmount = parseInt(document.getElementById('loanAmount').value);
+                const annualIncome = parseInt(document.getElementById('annualIncome').value);
+                
+                if (age < 18 || age > 80) {
+                    Swal.fire({
+                        title: 'Age Requirement',
+                        text: 'Age must be between 18 and 80 years.',
+                        icon: 'warning',
+                        confirmButtonColor: '#22c55e'
+                    });
+                    return;
+                }
+                
+                if (loanAmount > annualIncome * 10) {
+                    Swal.fire({
+                        title: 'Loan Amount Warning',
+                        text: 'Loan amount seems very high compared to your annual income. This may affect approval chances.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Continue Anyway',
+                        cancelButtonText: 'Modify Amount',
+                        confirmButtonColor: '#22c55e',
+                        cancelButtonColor: '#6b7280'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            processForm(submitBtn, originalText);
+                        }
+                    });
+                    return;
+                }
+                
+                processForm(submitBtn, originalText);
+                
+            } catch (error) {
+                console.error('Form submission error:', error);
+                Swal.fire({
+                    title: 'Submission Error',
+                    text: 'There was an error processing your form. Please try again.',
+                    icon: 'error',
+                    confirmButtonColor: '#22c55e'
+                });
+            }
+        });
+        
+        function processForm(submitBtn, originalText) {
+            // Show loading
+            submitBtn.innerHTML = '<span class="loading"></span> Calculating...';
+            submitBtn.disabled = true;
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                try {
+                    calculateEligibility();
+                } catch (error) {
+                    console.error('Calculation error:', error);
+                    Swal.fire({
+                        title: 'Calculation Error',
+                        text: 'There was an error calculating your eligibility. Please try again.',
+                        icon: 'error',
+                        confirmButtonColor: '#22c55e'
+                    });
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            }, 2000);
+        }
+
+        function calculateEligibility() {
+            const form = document.getElementById('eligibilityForm');
+            const formData = new FormData(form);
+            const loanType = form.dataset.loanType;
+            
+            const age = parseInt(formData.get('age'));
+            const farmSize = parseFloat(formData.get('farmSize'));
+            const annualIncome = parseInt(formData.get('annualIncome'));
+            const loanAmount = parseInt(formData.get('loanAmount'));
+            const farmingExperience = parseInt(formData.get('farmingExperience'));
+            const landOwnership = formData.get('landOwnership');
+            const existingLoans = formData.get('existingLoans');
+            const bankAccount = formData.get('bankAccount');
+            
+            // Get checked documents
+            const documents = [];
+            document.querySelectorAll('input[name="documents"]:checked').forEach(doc => {
+                documents.push(doc.value);
+            });
+            
+            let eligibilityScore = 0;
+            let recommendations = [];
+            let warnings = [];
+            
+            // Age criteria (Max: 20 points)
+            if (age >= 18 && age <= 60) {
+                eligibilityScore += 20;
+            } else if (age <= 65) {
+                eligibilityScore += 12;
+                warnings.push('Age above 60 may require additional guarantor');
+            } else {
+                eligibilityScore += 5;
+                warnings.push('Age above 65 may face eligibility challenges');
+            }
+            
+            // Farm size criteria (Max: 25 points)
+            if (farmSize >= 2) {
+                eligibilityScore += 25;
+            } else if (farmSize >= 1) {
+                eligibilityScore += 15;
+            } else {
+                eligibilityScore += 8;
+                warnings.push('Small farm size may limit loan amount');
+            }
+            
+            // Income to loan ratio (Max: 25 points)
+            const loanToIncomeRatio = loanAmount / annualIncome;
+            if (loanToIncomeRatio <= 3) {
+                eligibilityScore += 25;
+            } else if (loanToIncomeRatio <= 5) {
+                eligibilityScore += 15;
+                warnings.push('High loan-to-income ratio may require additional collateral');
+            } else {
+                eligibilityScore += 5;
+                warnings.push('Loan amount is very high compared to income');
+            }
+            
+            // Experience (Max: 15 points)
+            if (farmingExperience >= 5) {
+                eligibilityScore += 15;
+            } else if (farmingExperience >= 2) {
+                eligibilityScore += 10;
+            } else {
+                eligibilityScore += 5;
+                recommendations.push('Consider joining farmer training programs');
+            }
+            
+            // Land ownership (Max: 8 points)
+            if (landOwnership === 'owned') {
+                eligibilityScore += 8;
+            } else if (landOwnership === 'leased') {
+                eligibilityScore += 5;
+                warnings.push('Leased land may require additional documentation');
+            } else {
+                eligibilityScore += 2;
+                warnings.push('Share cropping may limit loan options');
+            }
+            
+            // Existing loans (Max: 5 points)
+            if (existingLoans === 'no') {
+                eligibilityScore += 5;
+            } else {
+                eligibilityScore += 2;
+                warnings.push('Existing loans may affect new loan approval');
+            }
+            
+            // Document score (Max: 10 points - 5 documents × 2 points each)
+            const docScore = Math.min(documents.length * 2, 10);
+            eligibilityScore += docScore;
+            
+            if (documents.length < 3) {
+                warnings.push('More documents may be required for approval');
+            }
+            
+            // Bank account (Penalty: -10 points if no account)
+            if (bankAccount === 'no') {
+                warnings.push('Bank account is mandatory for loan processing');
+                eligibilityScore -= 10;
+            }
+            
+            // Ensure score doesn't exceed 100 or go below 0
+            eligibilityScore = Math.max(0, Math.min(100, eligibilityScore));
+            
+            displayResult(eligibilityScore, recommendations, warnings, loanType, loanAmount);
+        }
+
+        function displayResult(score, recommendations, warnings, loanType, loanAmount) {
+            const resultDiv = document.getElementById('eligibilityResult');
+            const contentDiv = document.getElementById('resultContent');
+            
+            let resultClass, resultIcon, resultTitle, resultMessage;
+            
+            if (score >= 70) {
+                resultClass = 'result-success';
+                resultIcon = 'fas fa-check-circle';
+                resultTitle = 'Excellent! You are likely to be approved';
+                resultMessage = `Based on your profile, you have a high chance of getting approved for the ${loanType} loan of ₹${loanAmount.toLocaleString()}.`;
+            } else if (score >= 50) {
+                resultClass = 'result-warning';
+                resultIcon = 'fas fa-exclamation-triangle';
+                resultTitle = 'Good! You may be approved with conditions';
+                resultMessage = `Your application has a moderate chance of approval. Some additional requirements may apply.`;
+            } else {
+                resultClass = 'result-error';
+                resultIcon = 'fas fa-times-circle';
+                resultTitle = 'Improvement Needed';
+                resultMessage = `Your current profile may face challenges in loan approval. Please consider the recommendations below.`;
+            }
+            
+            resultDiv.className = `eligibility-result ${resultClass}`;
+            
+            let content = `
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                    <i class="${resultIcon}" style="font-size: 2rem;"></i>
+                    <div>
+                        <h3>${resultTitle}</h3>
+                        <p style="margin-top: 5px; opacity: 0.9;">${resultMessage}</p>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.5); padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <h4>Eligibility Score: ${score}/100</h4>
+                    <div style="background: #e5e7eb; height: 10px; border-radius: 5px; margin-top: 10px;">
+                        <div style="background: ${score >= 70 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444'}; height: 100%; width: ${score}%; border-radius: 5px; transition: width 1s ease;"></div>
+                    </div>
+                </div>
+            `;
+            
+            if (recommendations.length > 0) {
+                content += `
+                    <div style="margin-bottom: 20px;">
+                        <h4><i class="fas fa-lightbulb"></i> Recommendations:</h4>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            ${recommendations.map(rec => `<li style="margin-bottom: 5px;">${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            if (warnings.length > 0) {
+                content += `
+                    <div style="margin-bottom: 20px;">
+                        <h4><i class="fas fa-exclamation-triangle"></i> Important Notes:</h4>
+                        <ul style="margin-top: 10px; padding-left: 20px;">
+                            ${warnings.map(warning => `<li style="margin-bottom: 5px;">${warning}</li>`).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+            
+            content += `
+                <div style="text-align: center; margin-top: 25px;">
+                    <button class="btn-primary" onclick="proceedWithApplication()">
+                        <i class="fas fa-file-alt"></i> Proceed with Application
+                    </button>
+                    <button class="btn-secondary" onclick="resetForm()" style="margin-left: 15px;">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                </div>
+            `;
+            
+            contentDiv.innerHTML = content;
+            resultDiv.style.display = 'block';
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function proceedWithApplication() {
+            Swal.fire({
+                title: '🎉 Great Choice!',
+                html: `
+                    <p style="font-size: 16px; margin-bottom: 20px;">Your loan application process will begin shortly.</p>
+                    <div style="text-align: left; background: #f0f9ff; padding: 20px; border-radius: 10px;">
+                        <h4 style="color: #0c4a6e; margin-bottom: 15px;">Next Steps:</h4>
+                        <ol style="color: #374151; line-height: 1.6;">
+                            <li>Visit your nearest bank branch</li>
+                            <li>Carry all required documents</li>
+                            <li>Meet with the agricultural loan officer</li>
+                            <li>Submit your application form</li>
+                            <li>Wait for approval (7-15 days)</li>
+                        </ol>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonText: 'Got it!',
+                confirmButtonColor: '#22c55e',
+                customClass: {
+                    popup: 'swal2-show',
+                    confirmButton: 'enhanced-button'
+                }
+            });
+        }
+
+        function resetForm() {
+            document.getElementById('eligibilityForm').reset();
+            document.getElementById('eligibilityResult').style.display = 'none';
+            document.querySelectorAll('.loan-type-card').forEach(card => {
+                card.style.opacity = '1';
+                card.style.transform = 'none';
+            });
+            document.getElementById('eligibilityForm').style.display = 'none';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Enhanced language change handler
+        document.getElementById('languageSelect').addEventListener('change', function() {
+            const selectedLang = this.value;
+            const selectedText = this.options[this.selectedIndex].text;
+            
+            // Show language change notification
+            Swal.fire({
+                title: '🌐 Language Changed',
+                html: `
+                    <p style="font-size: 16px; margin-bottom: 15px;">Language switched to: <strong>${selectedText}</strong></p>
+                    <p style="color: #6b7280; font-size: 14px;">The page will reload with your selected language.</p>
+                    <div style="background: #f0f9ff; padding: 15px; border-radius: 10px; margin-top: 15px;">
+                        <p style="color: #0c4a6e; font-size: 13px; margin: 0;">
+                            <i class="fas fa-info-circle"></i> You can also use the Google Translate widget at the bottom-right for additional language options.
+                        </p>
+                    </div>
+                `,
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end',
+                customClass: {
+                    popup: 'swal2-show'
+                }
+            });
+            
+            // Update URL and reload
+            setTimeout(() => {
+                const currentUrl = new URL(window.location);
+                currentUrl.searchParams.set('lang', selectedLang);
+                window.location.href = currentUrl.toString();
+            }, 1000);
+        });
+
+        // Add Google Translate integration message
+        window.addEventListener('load', function() {
+            // Show a one-time info about translation options
+            if (!sessionStorage.getItem('translationInfoShown')) {
+                setTimeout(() => {
+                    Swal.fire({
+                        title: '🌐 Multi-Language Support',
+                        html: `
+                            <div style="text-align: left;">
+                                <p style="margin-bottom: 15px;">This page supports multiple languages:</p>
+                                <ul style="color: #374151; line-height: 1.6; margin-bottom: 15px;">
+                                    <li><strong>Top-right dropdown:</strong> Pre-configured Indian languages</li>
+                                    <li><strong>Bottom-right widget:</strong> Google Translate for 100+ languages</li>
+                                </ul>
+                                <p style="color: #6b7280; font-size: 14px; margin: 0;">Choose the option that works best for you!</p>
+                            </div>
+                        `,
+                        icon: 'info',
+                        confirmButtonText: 'Got it!',
+                        confirmButtonColor: '#22c55e',
+                        toast: true,
+                        position: 'top',
+                        timer: 8000,
+                        timerProgressBar: true
+                    });
+                    sessionStorage.setItem('translationInfoShown', 'true');
+                }, 2000);
+            }
+        });
+    </script>
+
+
+        <!-- Enhanced Voice Assistant with Multi-Language Support -->
+    <div class="voice-assistant-container" id="voiceAssistantContainer">
+        <button class="voice-assistant" id="voiceAssistant" title="Voice Assistant - Click and speak">
+            <div class="voice-waves">
+                <div class="wave wave1"></div>
+                <div class="wave wave2"></div>
+                <div class="wave wave3"></div>
+            </div>
+            <i class="fas fa-microphone" id="voiceIcon"></i>
+            <span class="voice-pulse"></span>
+        </button>
+        <div class="voice-status" id="voiceStatus">
+            <span class="status-text">Click to speak</span>
+        </div>
+    </div>
+
+        <!-- Google Translate Integration (All Indian Languages) -->
+        <div id="google_translate_element" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
+    <script src="voice-assist.js"></script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'en', 
+            includedLanguages: 'hi,bn,te,mr,ta,ur,gu,kn,ml,or,pa,as,ma,sd,sa,ks,ne,bo,km,kn,kok,doi,en',
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+          },
+          'google_translate_element'
+        );
+      }
+    </script>
+
+    <script type="text/javascript" 
+      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+
+    <!-- Styling to match your loan guide design -->
+    <style>
+      #google_translate_element {
+        background: rgba(34,197,94,0.1);
+        padding: 8px 15px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+        font-family: 'Poppins', sans-serif;
+        font-size: 0.85rem;
+        border: 2px solid rgba(34, 197, 94, 0.2);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+      }
+
+      #google_translate_element:hover {
+        background: rgba(34,197,94,0.15);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+      }
+
+      /* Style the Google Translate dropdown */
+      .goog-te-combo {
+        background: white !important;
+        border: 2px solid #22c55e !important;
+        border-radius: 8px !important;
+        padding: 6px 10px !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 0.9rem !important;
+        color: #1f2937 !important;
+        cursor: pointer !important;
+      }
+
+      .goog-te-combo:hover {
+        background: #f0f9ff !important;
+      }
+
+      .goog-te-combo:focus {
+        outline: none !important;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2) !important;
+      }
+
+      /* Hide Google Translate banner */
+      .goog-te-banner-frame.skiptranslate { 
+        display: none !important; 
+      } 
+      
+      body { 
+        top: 0 !important; 
+      }
+
+      /* Style the Google Translate attribution */
+      .goog-logo-link {
+        display: none !important;
+      }
+
+      .goog-te-gadget {
+        color: #374151 !important;
+        font-family: 'Poppins', sans-serif !important;
+      }
+
+      .goog-te-gadget .goog-te-combo {
+        margin: 0 !important;
+      }
+
+      /* Add a subtle label for Google Translate */
+      #google_translate_element::before {
+        content: "🌐 Translate: ";
+        color: #22c55e;
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+
+      /* Mobile responsive adjustments */
+      @media (max-width: 768px) {
+        #google_translate_element {
+          padding: 6px 10px;
+          font-size: 0.75rem;
+        }
+        
+        #google_translate_element::before {
+          content: "🌐 ";
+        }
+        
+        .goog-te-combo {
+          font-size: 0.8rem !important;
+          padding: 4px 8px !important;
+        }
+      }
+    </style>
+</body>
+
+</html>

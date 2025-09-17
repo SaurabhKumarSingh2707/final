@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crop Planning - AgriTech Frontend</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <link href="style.css" rel="stylesheet">
+    <link href="main.css" rel="stylesheet">
+    <style>
+        .planning-container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
+        .season-tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: var(--bg-primary, #fff);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .season-tab {
+            flex: 1;
+            padding: 1rem 2rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .season-tab.active {
+            background: #2e7d32;
+            color: #fff;
+        }
+        .season-content {
+            display: none;
+            background: var(--bg-primary, #fff);
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .season-content.active {
+            display: block;
+        }
+        .crop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .crop-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            border-left: 4px solid #4caf50;
+            transition: all 0.3s ease;
+        }
+        .crop-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .crop-name {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 0.5rem;
+        }
+        .crop-info {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+        }
+        .planning-tips {
+            background: #e8f5e8;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+        .calendar-view {
+            background: var(--bg-primary, #fff);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+        .month-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .month-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .month-name {
+            font-weight: 600;
+            color: #2e7d32;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="brand">
+                <a href="index.html" class="logo">AgriTech Frontend</a>
+            </div>
+            <div class="nav-buttons">
+                <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+                <a href="index.html" class="btn btn-primary">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="planning-container">
+        <div class="tool-header" style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="color: #2e7d32; font-size: 2.5rem;"><i class="fas fa-calendar-alt"></i> Crop Planning</h1>
+            <p>Plan your agricultural activities throughout the year for optimal yields</p>
+        </div>
+
+        <div class="season-tabs">
+            <button class="season-tab active" onclick="showSeason('kharif')">Kharif (Summer)</button>
+            <button class="season-tab" onclick="showSeason('rabi')">Rabi (Winter)</button>
+            <button class="season-tab" onclick="showSeason('zaid')">Zaid (Summer)</button>
+        </div>
+
+        <div id="kharif" class="season-content active">
+            <h2><i class="fas fa-sun"></i> Kharif Season (June - October)</h2>
+            <div class="planning-tips">
+                <h3><i class="fas fa-lightbulb"></i> Season Overview</h3>
+                <p>Kharif crops are sown at the beginning of the rainy season (June-July) and harvested at the end of monsoon (September-October). These crops require warm weather for germination and growth, and a rainy season for their development.</p>
+            </div>
+            
+            <div class="crop-grid">
+                <div class="crop-card">
+                    <div class="crop-name">Rice</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> June-July<br>
+                        <strong>Harvesting:</strong> October-November<br>
+                        <strong>Duration:</strong> 120-150 days<br>
+                        <strong>Water:</strong> High requirement (1500-2000mm)<br>
+                        <strong>Soil:</strong> Clay loam, well-drained
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Cotton</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> May-June<br>
+                        <strong>Harvesting:</strong> October-January<br>
+                        <strong>Duration:</strong> 180-200 days<br>
+                        <strong>Water:</strong> Moderate (600-1200mm)<br>
+                        <strong>Soil:</strong> Well-drained black cotton soil
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Sugarcane</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> February-April & October<br>
+                        <strong>Harvesting:</strong> 12-18 months<br>
+                        <strong>Duration:</strong> 300-365 days<br>
+                        <strong>Water:</strong> High requirement (2000-2500mm)<br>
+                        <strong>Soil:</strong> Deep, fertile, well-drained
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Maize</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> June-July<br>
+                        <strong>Harvesting:</strong> September-October<br>
+                        <strong>Duration:</strong> 80-120 days<br>
+                        <strong>Water:</strong> Moderate (500-800mm)<br>
+                        <strong>Soil:</strong> Well-drained loamy soil
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="rabi" class="season-content">
+            <h2><i class="fas fa-snowflake"></i> Rabi Season (November - April)</h2>
+            <div class="planning-tips">
+                <h3><i class="fas fa-lightbulb"></i> Season Overview</h3>
+                <p>Rabi crops are sown in winter (November-December) and harvested in spring (March-May). These crops require cool weather for germination and warm weather for growth and maturation.</p>
+            </div>
+            
+            <div class="crop-grid">
+                <div class="crop-card">
+                    <div class="crop-name">Wheat</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> November-December<br>
+                        <strong>Harvesting:</strong> March-April<br>
+                        <strong>Duration:</strong> 120-150 days<br>
+                        <strong>Water:</strong> Moderate (400-650mm)<br>
+                        <strong>Soil:</strong> Well-drained loamy soil
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Barley</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> October-November<br>
+                        <strong>Harvesting:</strong> March-April<br>
+                        <strong>Duration:</strong> 120-140 days<br>
+                        <strong>Water:</strong> Low-moderate (300-500mm)<br>
+                        <strong>Soil:</strong> Well-drained sandy loam
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Mustard</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> October-November<br>
+                        <strong>Harvesting:</strong> February-March<br>
+                        <strong>Duration:</strong> 90-120 days<br>
+                        <strong>Water:</strong> Low-moderate (300-400mm)<br>
+                        <strong>Soil:</strong> Well-drained sandy loam
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Potato</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> October-November<br>
+                        <strong>Harvesting:</strong> January-February<br>
+                        <strong>Duration:</strong> 90-120 days<br>
+                        <strong>Water:</strong> Moderate (500-700mm)<br>
+                        <strong>Soil:</strong> Well-drained sandy loam
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="zaid" class="season-content">
+            <h2><i class="fas fa-thermometer-half"></i> Zaid Season (March - June)</h2>
+            <div class="planning-tips">
+                <h3><i class="fas fa-lightbulb"></i> Season Overview</h3>
+                <p>Zaid crops are grown during the dry season with irrigation. These crops require hot weather and are typically grown in areas with assured irrigation facilities.</p>
+            </div>
+            
+            <div class="crop-grid">
+                <div class="crop-card">
+                    <div class="crop-name">Watermelon</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> March-April<br>
+                        <strong>Harvesting:</strong> May-June<br>
+                        <strong>Duration:</strong> 70-90 days<br>
+                        <strong>Water:</strong> High requirement (irrigation needed)<br>
+                        <strong>Soil:</strong> Well-drained sandy loam
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Cucumber</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> March-April<br>
+                        <strong>Harvesting:</strong> May-June<br>
+                        <strong>Duration:</strong> 60-80 days<br>
+                        <strong>Water:</strong> High requirement (irrigation needed)<br>
+                        <strong>Soil:</strong> Well-drained fertile loam
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Fodder Crops</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> March-April<br>
+                        <strong>Harvesting:</strong> May-June<br>
+                        <strong>Duration:</strong> 60-90 days<br>
+                        <strong>Water:</strong> Moderate-high (irrigation)<br>
+                        <strong>Soil:</strong> Various soil types
+                    </div>
+                </div>
+                <div class="crop-card">
+                    <div class="crop-name">Summer Rice</div>
+                    <div class="crop-info">
+                        <strong>Sowing:</strong> March-April<br>
+                        <strong>Harvesting:</strong> June-July<br>
+                        <strong>Duration:</strong> 90-120 days<br>
+                        <strong>Water:</strong> Very high (assured irrigation)<br>
+                        <strong>Soil:</strong> Clay loam with good water retention
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-view">
+            <h2><i class="fas fa-calendar"></i> Agricultural Calendar Overview</h2>
+            <div class="month-grid">
+                <div class="month-card">
+                    <div class="month-name">January</div>
+                    <div>Rabi harvesting begins<br>Potato harvesting</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">February</div>
+                    <div>Sugarcane planting<br>Mustard harvesting</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">March</div>
+                    <div>Zaid sowing begins<br>Wheat harvesting</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">April</div>
+                    <div>Summer crops sowing<br>Rabi harvesting ends</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">May</div>
+                    <div>Cotton sowing<br>Zaid harvesting begins</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">June</div>
+                    <div>Kharif sowing begins<br>Monsoon arrival</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">July</div>
+                    <div>Rice sowing<br>Maize planting</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">August</div>
+                    <div>Kharif growth period<br>Pest monitoring</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">September</div>
+                    <div>Early Kharif harvesting<br>Maize maturation</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">October</div>
+                    <div>Rice harvesting<br>Rabi preparation</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">November</div>
+                    <div>Rabi sowing<br>Wheat planting</div>
+                </div>
+                <div class="month-card">
+                    <div class="month-name">December</div>
+                    <div>Rabi growth<br>Field preparation</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showSeason(season) {
+            // Hide all season contents
+            document.querySelectorAll('.season-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all tabs
+            document.querySelectorAll('.season-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected season content
+            document.getElementById(season).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Theme support
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+    </script>
+</body>
+</html>

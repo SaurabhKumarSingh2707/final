@@ -1,0 +1,859 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="description"
+    content="KrishiVaani - Empowering Agriculture Through Technology. Pure HTML/CSS/JS agricultural platform." />
+  <title>KrishiVaani - Agricultural Technology Platform</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="icon" type="image/png" href="images/logo.png">
+  
+  <!-- SweetAlert2 for modern alerts -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Animate.css for SweetAlert2 animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  
+  <!-- Custom Enhanced Animations -->
+  <style>
+    /* Custom SweetAlert2 Enhanced Animations */
+    .swal2-popup.swal2-show.enhanced-bounce {
+      animation: enhancedBounceIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    .swal2-popup.swal2-hide.enhanced-zoom-out {
+      animation: enhancedZoomOut 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    .swal2-popup.swal2-show.enhanced-slide-down {
+      animation: enhancedSlideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    
+    .swal2-popup.swal2-show.enhanced-flip {
+      animation: enhancedFlipIn 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .swal2-popup.swal2-show.enhanced-shake {
+      animation: enhancedShake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    }
+    
+    .swal2-popup.swal2-show.enhanced-pulse {
+      animation: enhancedPulse 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    /* Keyframes */
+    @keyframes enhancedBounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3) translateY(-100px) rotate(-10deg);
+      }
+      50% {
+        opacity: 0.9;
+        transform: scale(1.05) translateY(10px) rotate(2deg);
+      }
+      80% {
+        opacity: 1;
+        transform: scale(0.95) translateY(-5px) rotate(-1deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotate(0deg);
+      }
+    }
+    
+    @keyframes enhancedZoomOut {
+      0% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+      50% {
+        opacity: 0.5;
+        transform: scale(1.1) rotate(5deg);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0) rotate(360deg);
+      }
+    }
+    
+    @keyframes enhancedSlideDown {
+      0% {
+        opacity: 0;
+        transform: translateY(-100px) scale(0.8) rotateX(-90deg);
+      }
+      60% {
+        opacity: 0.8;
+        transform: translateY(20px) scale(1.02) rotateX(5deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateX(0deg);
+      }
+    }
+    
+    @keyframes enhancedFlipIn {
+      0% {
+        opacity: 0;
+        transform: rotateY(-180deg) scale(0.5);
+      }
+      50% {
+        opacity: 0.8;
+        transform: rotateY(-10deg) scale(1.1);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateY(0deg) scale(1);
+      }
+    }
+    
+    @keyframes enhancedShake {
+      0%, 100% {
+        transform: translateX(0) scale(1);
+      }
+      10% {
+        transform: translateX(-10px) scale(1.02) rotate(-1deg);
+      }
+      20% {
+        transform: translateX(10px) scale(0.98) rotate(1deg);
+      }
+      30% {
+        transform: translateX(-8px) scale(1.01) rotate(-0.5deg);
+      }
+      40% {
+        transform: translateX(8px) scale(0.99) rotate(0.5deg);
+      }
+      50% {
+        transform: translateX(-6px) scale(1) rotate(0deg);
+      }
+      60% {
+        transform: translateX(6px) scale(1.01) rotate(-0.2deg);
+      }
+      70% {
+        transform: translateX(-4px) scale(0.99) rotate(0.2deg);
+      }
+      80% {
+        transform: translateX(4px) scale(1) rotate(0deg);
+      }
+      90% {
+        transform: translateX(-2px) scale(1);
+      }
+    }
+    
+    @keyframes enhancedPulse {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+      }
+      50% {
+        opacity: 0.9;
+        transform: scale(1.05);
+        box-shadow: 0 0 0 20px rgba(34, 197, 94, 0.3);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        box-shadow: 0 0 0 30px rgba(34, 197, 94, 0);
+      }
+    }
+    
+    /* Enhanced backdrop animations */
+    .swal2-backdrop-show {
+      animation: backdropFadeIn 0.4s ease-out;
+    }
+    
+    .swal2-backdrop-hide {
+      animation: backdropFadeOut 0.3s ease-in;
+    }
+    
+    @keyframes backdropFadeIn {
+      0% { opacity: 0; backdrop-filter: blur(0px); }
+      100% { opacity: 1; backdrop-filter: blur(5px); }
+    }
+    
+    @keyframes backdropFadeOut {
+      0% { opacity: 1; backdrop-filter: blur(5px); }
+      100% { opacity: 0; backdrop-filter: blur(0px); }
+    }
+    
+    /* Custom button hover effects */
+    .swal2-styled.swal2-confirm {
+      background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4) !important;
+    }
+    
+    .swal2-styled.swal2-confirm:hover {
+      background: linear-gradient(135deg, #16a34a, #15803d) !important;
+      transform: translateY(-2px) scale(1.05) !important;
+      box-shadow: 0 8px 25px rgba(34, 197, 94, 0.6) !important;
+    }
+    
+    .swal2-styled.swal2-cancel {
+      background: linear-gradient(135deg, #6b7280, #4b5563) !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      box-shadow: 0 4px 15px rgba(107, 114, 128, 0.3) !important;
+    }
+    
+    .swal2-styled.swal2-cancel:hover {
+      background: linear-gradient(135deg, #4b5563, #374151) !important;
+      transform: translateY(-2px) scale(1.05) !important;
+      box-shadow: 0 8px 25px rgba(107, 114, 128, 0.5) !important;
+    }
+    
+    /* Enhanced authentication alert buttons */
+    .enhanced-auth-confirm-btn {
+      background: linear-gradient(135deg, #059669, #047857) !important;
+      color: white !important;
+      border: none !important;
+      padding: 15px 30px !important;
+      border-radius: 50px !important;
+      font-weight: 600 !important;
+      font-size: 16px !important;
+      letter-spacing: 0.5px !important;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      box-shadow: 0 8px 25px rgba(5, 150, 105, 0.4) !important;
+      position: relative !important;
+      overflow: hidden !important;
+    }
+    
+    .enhanced-auth-confirm-btn:hover {
+      background: linear-gradient(135deg, #047857, #065f46) !important;
+      transform: translateY(-3px) scale(1.05) !important;
+      box-shadow: 0 12px 35px rgba(5, 150, 105, 0.6) !important;
+    }
+    
+    .enhanced-auth-confirm-btn::before {
+      content: '' !important;
+      position: absolute !important;
+      top: 0 !important;
+      left: -100% !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent) !important;
+      transition: left 0.6s !important;
+    }
+    
+    .enhanced-auth-confirm-btn:hover::before {
+      left: 100% !important;
+    }
+    
+    .enhanced-auth-cancel-btn {
+      background: linear-gradient(135deg, #f3f4f6, #e5e7eb) !important;
+      color: #374151 !important;
+      border: 2px solid #d1d5db !important;
+      padding: 13px 28px !important;
+      border-radius: 50px !important;
+      font-weight: 500 !important;
+      font-size: 16px !important;
+      letter-spacing: 0.3px !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+      box-shadow: 0 4px 15px rgba(107, 114, 128, 0.2) !important;
+    }
+    
+    .enhanced-auth-cancel-btn:hover {
+      background: linear-gradient(135deg, #e5e7eb, #d1d5db) !important;
+      color: #1f2937 !important;
+      transform: translateY(-2px) scale(1.03) !important;
+      box-shadow: 0 6px 20px rgba(107, 114, 128, 0.3) !important;
+      border-color: #9ca3af !important;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Libertinus+Serif:wght@400;600&display=swap"
+    rel="stylesheet" />
+  <link href="style.css" rel="stylesheet" />
+  <link href="hero-styles.css" rel="stylesheet" />
+  <script src="voice-assist.js"></script>
+  <script src="flask-service-manager.js"></script>
+  <script src="advanced-flask-auto-starter.js"></script>
+  <script src="flask-auto-start.js"></script>
+  
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="navbar-content">
+      <div class="brand">
+        <a href="index.html" class="logo">KrishiVaani</a>
+      </div>
+      <div class="nav-buttons">
+        <button class="theme-toggle btn" aria-label="Toggle dark/light mode">
+          <i class="fas fa-sun sun-icon"></i>
+          <i class="fas fa-moon moon-icon"></i>
+          <span class="theme-text">Light</span>
+        </button>
+        <a href="about.html" class="btn btn-secondary">About</a>
+        <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+        <a href="feed-back.html" class="btn btn-primary">Contact</a>
+    <a href="login.html" class="btn btn-primary">Login</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="assets/hero-agricultural.jpg" alt="Agricultural hero background" class="hero-background-img" />
+      <div class="hero-content">
+        <h2 class="serif">Empowering Agriculture Through Technology</h2>
+        <p>
+          KrishiVaani connects <strong>Farmers</strong>, <strong>Buyers</strong>,
+          <strong>Equipment Suppliers</strong>, and
+          <strong>Agricultural Communities</strong> to revolutionize farming
+          with modern web technologies and smart solutions.
+        </p>
+        <div class="hero-buttons">
+          <a href="#" id="dashboardBtn" class="hero-btn primary">Explore Dashboard</a>
+          <a href="about.html" class="hero-btn secondary">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="features loading">
+    <div class="features-container">
+      <h2 class="features-title serif">Frontend Platform Benefits</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon"></div>
+          <h3 class="feature-title serif">For Farmers</h3>
+          <p class="feature-description">
+            Access agricultural information, crop guides, and farming tools
+            through our interactive web interface.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"></div>
+          <h3 class="feature-title serif">For Buyers</h3>
+          <p class="feature-description">
+            Browse agricultural products and supplier information with
+            our comprehensive directory system.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"></div>
+          <h3 class="feature-title serif">Equipment Info</h3>
+          <p class="feature-description">
+            Learn about modern agricultural equipment and farming
+            technologies through detailed guides.
+          </p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon"></div>
+          <h3 class="feature-title serif">Resource Hub</h3>
+          <p class="feature-description">
+            Access educational content, weather information, and
+            agricultural best practices all in one place.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="carousel" aria-label="Featured agricultural images">
+    <h2 class="carousel-title serif">Agriculture in Action</h2>
+    <div class="slider">
+      <div class="slide-track">
+        <!-- Original 6 images -->
+        <img src="images/AgriActImg1.jpeg" alt="Farmers working in a lush green field" />
+        <img src="images/AgriActImg2.jpeg" alt="Harvested crops ready for market" />
+        <img src="images/AgriActImg3.jpeg" alt="Modern agricultural equipment in use" />
+        <img src="images/AgriActImg1.jpeg" alt="Farmers working in a lush green field" />
+        <img src="images/AgriActImg2.jpeg" alt="Harvested crops ready for market" />
+        <img src="images/AgriActImg3.jpeg" alt="Modern agricultural equipment in use" />
+        <!-- Duplicate the same 6 images again -->
+        <img src="images/AgriActImg1.jpeg" alt="Farmers working in a lush green field" />
+        <img src="images/AgriActImg2.jpeg" alt="Harvested crops ready for market" />
+        <img src="images/AgriActImg3.jpeg" alt="Modern agricultural equipment in use" />
+        <img src="images/AgriActImg1.jpeg" alt="Farmers working in a lush green field" />
+        <img src="images/AgriActImg2.jpeg" alt="Harvested crops ready for market" />
+        <img src="images/AgriActImg3.jpeg" alt="Modern agricultural equipment in use" />
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="cta-content">
+      <h3 class="serif">Ready to Explore Agricultural Technology?</h3>
+      <p>
+        Discover our comprehensive frontend platform with tools, guides,
+        and resources for modern agriculture.
+      </p>
+      <a href="dashboard.html" class="cta-button">Explore Dashboard</a>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="images/logo.png" alt="KrishiVaani logo" class="footer-logo">
+        <h3 class="serif">KrishiVaani</h3>
+        <p>Empowering Agriculture with modern web technology solutions that connect every stakeholder in the agricultural ecosystem.</p>
+        <div class="social-media">
+          <a href="https://github.com/SaurabhKumarSingh2707" target="_blank" aria-label="View source code on GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="#" target="_blank" aria-label="Project documentation">
+            <i class="fas fa-book"></i>
+          </a>
+          <a href="feed-back.html" aria-label="Send feedback">
+            <i class="fas fa-envelope"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4 class="serif">Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="feed-back.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4 class="serif">Agricultural Tools</h4>
+        <ul>
+          <li><a href="weather.html">Weather Info</a></li>
+          <li><a href="disease.html">Disease Guide</a></li>
+          <li><a href="organic.html">Organic Farming</a></li>
+          <li><a href="plantation.html">Plantation Guide</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"> 2025 KrishiVaani - Agricultural Technology Platform</div>
+  </footer>
+
+  <button class="scroll-to-top" id="scrollToTop" title="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- Enhanced Voice Assistant with Multi-Language Support -->
+  <div class="voice-assistant-container" id="voiceAssistantContainer">
+    <div class="language-selector" id="languageSelector">
+      <button class="lang-btn" id="langToggle" title="Select Language">
+        <i class="fas fa-language"></i>
+        <span class="lang-text">EN</span>
+      </button>
+      <div class="lang-dropdown" id="langDropdown">
+        <div class="lang-option" data-lang="en-IN" data-code="EN">
+          <span class="flag">🇮🇳</span>
+          <span>English</span>
+        </div>
+        <div class="lang-option" data-lang="hi-IN" data-code="हि">
+          <span class="flag">🇮🇳</span>
+          <span>हिंदी</span>
+        </div>
+        <div class="lang-option" data-lang="bn-IN" data-code="বা">
+          <span class="flag">🇮🇳</span>
+          <span>বাংলা</span>
+        </div>
+        <div class="lang-option" data-lang="te-IN" data-code="తె">
+          <span class="flag">🇮🇳</span>
+          <span>తెలుగు</span>
+        </div>
+        <div class="lang-option" data-lang="mr-IN" data-code="म">
+          <span class="flag">🇮🇳</span>
+          <span>मराठी</span>
+        </div>
+        <div class="lang-option" data-lang="ta-IN" data-code="த">
+          <span class="flag">🇮🇳</span>
+          <span>தமிழ்</span>
+        </div>
+        <div class="lang-option" data-lang="gu-IN" data-code="ગુ">
+          <span class="flag">🇮🇳</span>
+          <span>ગુજરાતી</span>
+        </div>
+        <div class="lang-option" data-lang="kn-IN" data-code="ಕ">
+          <span class="flag">🇮🇳</span>
+          <span>ಕನ್ನಡ</span>
+        </div>
+        <div class="lang-option" data-lang="ml-IN" data-code="മ">
+          <span class="flag">🇮🇳</span>
+          <span>മലയാളം</span>
+        </div>
+        <div class="lang-option" data-lang="pa-IN" data-code="ਪ">
+          <span class="flag">🇮🇳</span>
+          <span>ਪੰਜਾਬੀ</span>
+        </div>
+        <div class="lang-option" data-lang="or-IN" data-code="ଓ">
+          <span class="flag">🇮🇳</span>
+          <span>ଓଡ଼ିଆ</span>
+        </div>
+        <div class="lang-option" data-lang="as-IN" data-code="অ">
+          <span class="flag">🇮🇳</span>
+          <span>অসমীয়া</span>
+        </div>
+      </div>
+    </div>
+    <button class="voice-assistant" id="voiceAssistant" title="Voice Assistant - Click and speak">
+      <div class="voice-waves">
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+      </div>
+      <i class="fas fa-microphone" id="voiceIcon"></i>
+      <span class="voice-pulse"></span>
+    </button>
+    <div class="voice-status" id="voiceStatus">
+      <span class="status-text">Click to speak</span>
+    </div>
+  </div>
+
+  <script>
+    // Theme toggle functionality
+    const themeToggle = document.querySelector('.theme-toggle');
+    const themeText = document.querySelector('.theme-text');
+
+    // Check for saved theme preference
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', currentTheme);
+    themeText.textContent = currentTheme === 'dark' ? 'Dark' : 'Light';
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      themeText.textContent = newTheme === 'dark' ? 'Dark' : 'Light';
+    });
+
+    // Scroll to top functionality
+    const scrollToTopBtn = document.getElementById("scrollToTop");
+
+    window.addEventListener("scroll", () => {
+      if (window.pageYOffset > 300) {
+        scrollToTopBtn.classList.add("visible");
+      } else {
+        scrollToTopBtn.classList.remove("visible");
+      }
+    });
+
+    scrollToTopBtn.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px",
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = "running";
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll("section").forEach((section) => {
+      observer.observe(section);
+    });
+
+    window.addEventListener("load", () => {
+      document.body.style.opacity = "1";
+    });
+
+    // Show welcome message
+    setTimeout(() => {
+      console.log("Welcome to KrishiVaani! This is a pure HTML/CSS/JS agricultural platform.");
+    }, 1000);
+  </script>
+
+  <!-- Firebase Authentication for Navigation -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBzgNpV6aFyjtDX6Ig9rgP8x2w647jWN5M",
+        authDomain: "smart-crop-advisory-f3913.firebaseapp.com",
+        projectId: "smart-crop-advisory-f3913",
+        storageBucket: "smart-crop-advisory-f3913.firebasestorage.app",
+        messagingSenderId: "231721730375",
+        appId: "1:231721730375:web:a07c0b372e8b99ed27cc62"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth();
+
+    // Add dashboard button authentication check
+    document.addEventListener('DOMContentLoaded', () => {
+      const dashboardBtn = document.getElementById('dashboardBtn');
+      if (dashboardBtn) {
+        dashboardBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const currentUser = auth.currentUser;
+          if (currentUser) {
+            window.location.href = 'dashboard.html';
+          } else {
+            Swal.fire({
+              title: '🌾 Welcome to KrishiVaani Dashboard!',
+              html: `
+                <div style="text-align: center; padding: 20px;">
+                  <div style="font-size: 4rem; margin-bottom: 20px; animation: bounce 2s infinite;">
+                    🚀
+                  </div>
+                  <h3 style="color: #16a34a; font-size: 1.4rem; margin-bottom: 15px; font-weight: 600;">
+                    Unlock Your Agricultural Journey
+                  </h3>
+                  <p style="font-size: 16px; color: #6b7280; margin-bottom: 20px; line-height: 1.6;">
+                    Join thousands of farmers already using our AI-powered tools for:
+                  </p>
+                  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin: 20px 0;">
+                    <div style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); padding: 10px 15px; border-radius: 20px; font-size: 14px; color: #166534; font-weight: 500;">
+                      🌱 Smart Crop Recommendations
+                    </div>
+                    <div style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); padding: 10px 15px; border-radius: 20px; font-size: 14px; color: #1e40af; font-weight: 500;">
+                      📊 Yield Predictions
+                    </div>
+                    <div style="background: linear-gradient(135deg, #fef3c7, #fde68a); padding: 10px 15px; border-radius: 20px; font-size: 14px; color: #92400e; font-weight: 500;">
+                      🔬 Disease Detection
+                    </div>
+                    <div style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe); padding: 10px 15px; border-radius: 20px; font-size: 14px; color: #3730a3; font-weight: 500;">
+                      ⛅ Weather Insights
+                    </div>
+                  </div>
+                  <p style="font-size: 18px; color: #059669; margin-top: 20px; font-weight: 600;">
+                    🎯 Ready to boost your farm productivity?
+                  </p>
+                </div>
+                <style>
+                  @keyframes bounce {
+                    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+                    40% { transform: translateY(-20px); }
+                    60% { transform: translateY(-10px); }
+                  }
+                </style>
+              `,
+              icon: null,
+              confirmButtonText: '✨ Login & Explore Dashboard',
+              cancelButtonText: '👀 Browse as Guest',
+              showCancelButton: true,
+              confirmButtonColor: '#059669',
+              cancelButtonColor: '#6b7280',
+              buttonsStyling: false,
+              customClass: {
+                popup: 'enhanced-flip',
+                confirmButton: 'enhanced-auth-confirm-btn',
+                cancelButton: 'enhanced-auth-cancel-btn'
+              },
+              showClass: {
+                backdrop: 'swal2-backdrop-show'
+              },
+              hideClass: {
+                backdrop: 'swal2-backdrop-hide',
+                popup: 'enhanced-zoom-out'
+              },
+              backdrop: true,
+              allowOutsideClick: true,
+              focusConfirm: true,
+              reverseButtons: true,
+              width: '600px',
+              padding: '2rem'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                window.location.href = 'login.html';
+              }
+            });
+          }
+        });
+      }
+    });
+
+    // Update navigation based on authentication state
+    onAuthStateChanged(auth, (user) => {
+      const navButtons = document.querySelector('.nav-buttons');
+      
+      if (user) {
+        // User is logged in - show Dashboard and Logout
+        navButtons.innerHTML = `
+          <button class="theme-toggle btn" aria-label="Toggle dark/light mode">
+            <i class="fas fa-sun sun-icon"></i>
+            <i class="fas fa-moon moon-icon"></i>
+            <span class="theme-text">Light</span>
+          </button>
+          <a href="about.html" class="btn btn-secondary">About</a>
+          <a href="dashboard.html" class="btn btn-secondary">Dashboard</a>
+          <a href="feed-back.html" class="btn btn-primary">Contact</a>
+          <button id="logoutBtn" class="btn btn-primary">Logout</button>
+        `;
+        
+        // Add logout functionality (remove existing listener first to prevent duplicates)
+        const logoutBtn = document.getElementById('logoutBtn');
+        logoutBtn.replaceWith(logoutBtn.cloneNode(true));
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+          // Show confirmation dialog
+          Swal.fire({
+            title: '👋 Confirm Logout',
+            html: '<p style="font-size: 16px; color: #6b7280; margin: 15px 0;">Are you sure you want to logout from your account?</p>',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: '✅ Yes, logout',
+            cancelButtonText: '❌ Cancel',
+            customClass: {
+              popup: 'enhanced-slide-down',
+              confirmButton: 'enhanced-button',
+              cancelButton: 'enhanced-button'
+            },
+            showClass: {
+              backdrop: 'swal2-backdrop-show'
+            },
+            hideClass: {
+              backdrop: 'swal2-backdrop-hide',
+              popup: 'enhanced-zoom-out'
+            },
+            backdrop: true,
+            focusCancel: true,
+            reverseButtons: true
+          }).then(async (result) => {
+            if (result.isConfirmed) {
+              try {
+                await signOut(auth);
+                Swal.fire({
+                  title: '✨ Successfully Logged Out!',
+                  html: '<p style="font-size: 16px; color: #6b7280;">Thank you for using KrishiVaani. See you soon! 🌱</p>',
+                  icon: 'success',
+                  timer: 2500,
+                  timerProgressBar: true,
+                  showConfirmButton: false,
+                  customClass: {
+                    popup: 'enhanced-pulse'
+                  },
+                  showClass: {
+                    backdrop: 'swal2-backdrop-show'
+                  },
+                  hideClass: {
+                    backdrop: 'swal2-backdrop-hide',
+                    popup: 'enhanced-zoom-out'
+                  },
+                  backdrop: true,
+                  allowOutsideClick: false
+                }).then(() => {
+                  // The page will automatically refresh due to auth state change
+                  // But we can also force a refresh to ensure UI updates
+                  window.location.reload();
+                });
+              } catch (error) {
+                console.error('Logout error:', error);
+                Swal.fire({
+                  title: '⚠️ Logout Failed',
+                  html: '<p style="font-size: 16px; color: #6b7280;">Something went wrong. Please try again.</p>',
+                  icon: 'error',
+                  confirmButtonText: '🔄 Try Again',
+                  confirmButtonColor: '#ef4444',
+                  customClass: {
+                    popup: 'enhanced-shake',
+                    confirmButton: 'enhanced-button'
+                  },
+                  showClass: {
+                    backdrop: 'swal2-backdrop-show'
+                  },
+                  hideClass: {
+                    backdrop: 'swal2-backdrop-hide',
+                    popup: 'enhanced-zoom-out'
+                  },
+                  backdrop: true
+                });
+              }
+            }
+          });
+        });
+        
+        // Re-initialize theme toggle
+        initializeThemeToggle();
+        
+      } else {
+        // User is not logged in - show Login
+        navButtons.innerHTML = `
+          <button class="theme-toggle btn" aria-label="Toggle dark/light mode">
+            <i class="fas fa-sun sun-icon"></i>
+            <i class="fas fa-moon moon-icon"></i>
+            <span class="theme-text">Light</span>
+          </button>
+          <a href="about.html" class="btn btn-secondary">About</a>
+          <a href="feed-back.html" class="btn btn-primary">Contact</a>
+          <a href="login.html" class="btn btn-primary">Login</a>
+        `;
+        
+        // Re-initialize theme toggle
+        initializeThemeToggle();
+      }
+    });
+
+    // Function to initialize theme toggle functionality
+    function initializeThemeToggle() {
+      const themeToggle = document.querySelector('.theme-toggle');
+      const themeText = document.querySelector('.theme-text');
+      
+      if (!themeToggle || !themeText) return;
+      
+      // Set current theme
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      themeText.textContent = currentTheme === 'dark' ? 'Dark' : 'Light';
+
+      // Remove existing listeners and add new one
+      themeToggle.replaceWith(themeToggle.cloneNode(true));
+      const newThemeToggle = document.querySelector('.theme-toggle');
+      const newThemeText = document.querySelector('.theme-text');
+      
+      newThemeToggle.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        newThemeText.textContent = newTheme === 'dark' ? 'Dark' : 'Light';
+      });
+    }
+  </script>
+  <!-- Google Translate Integration (All Indian Languages) -->
+<div id="google_translate_element" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {
+        pageLanguage: 'en', 
+        includedLanguages: 'hi,bn,te,mr,ta,ur,gu,kn,ml,or,pa,as,ma,sd,sa,ks,ne,bo,km,kn,kok,doi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      },
+      'google_translate_element'
+    );
+  }
+</script>
+
+<script type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+
+<!-- Styling to match your dashboard -->
+<style>
+  #google_translate_element {
+    background: rgba(34,197,94,0.1);
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+  }
+
+  .goog-te-banner-frame.skiptranslate { display: none !important; } 
+  body { top: 0 !important; } /* Prevent page shift due to translate banner */
+</style>
+
+</body>
+
+</html>

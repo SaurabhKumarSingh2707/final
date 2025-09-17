@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Yield Prediction - AgriTech Frontend</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="icon" type="image/png" href="images/logo.png">
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9f9f9;
+      --text-primary: #222;
+      --text-secondary: #555;
+      --accent: #2e7d32;
+    }
+    [data-theme="dark"] {
+      --bg-primary: #1e1e1e;
+      --bg-secondary: #2c2c2c;
+      --text-primary: #f5f5f5;
+      --text-secondary: #bbb;
+      --accent: #66bb6a;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: var(--bg-secondary);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .logo {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .nav-buttons a {
+      text-decoration: none;
+      margin-left: 1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background 0.3s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid var(--accent);
+      color: var(--accent);
+    }
+    .btn-primary:hover, .btn-secondary:hover {
+      opacity: 0.9;
+    }
+    .theme-toggle {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      cursor: pointer;
+      margin-left: 1rem;
+      color: var(--text-primary);
+      transition: color 0.3s;
+    }
+
+    /* Tool container */
+    .tool-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: var(--bg-primary);
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+    }
+    .tool-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .tool-header h1 {
+      color: var(--accent);
+      font-size: 2.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .tool-header p {
+      color: var(--text-secondary);
+    }
+
+    /* Form */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 768px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .form-group label {
+      font-weight: 600;
+    }
+    .form-group input, .form-group select {
+      padding: 0.9rem;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    .submit-btn {
+      background: linear-gradient(135deg, #2e7d32, #4caf50);
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+      grid-column: 1 / -1;
+    }
+    .submit-btn:hover {
+      background: linear-gradient(135deg, #1b5e20, #2e7d32);
+      transform: translateY(-2px);
+    }
+
+    /* Result */
+    .result-box {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #e8f5e8;
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      display: none;
+    }
+    .result-box.show {
+      display: block;
+    }
+    .yield-chart {
+      background: var(--bg-secondary);
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="logo">Yeild Predictor</a>
+    <div class="nav-buttons">
+      <a href="../../dashboard.html" class="btn btn-secondary">Dashboard</a>
+      <a href="../../index.html" class="btn btn-primary">Home</a>
+      <button id="themeToggle" class="theme-toggle" title="Toggle Day/Night Mode">
+        <i class="fas fa-sun"></i>
+      </button>
+    </div>
+  </nav>
+
+  <div class="tool-container">
+    <div class="tool-header">
+      <h1><i class="fas fa-chart-line"></i> Crop Yield Prediction</h1>
+      <p>Predict expected crop yield based on various agricultural factors</p>
+    </div>
+
+    <form class="tool-form" id="yieldForm">
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="crop">Select Crop</label>
+          <select id="crop" name="crop" required>
+            <option value="">Choose a crop</option>
+            <option value="rice">Rice</option>
+            <option value="wheat">Wheat</option>
+            <option value="cotton">Cotton</option>
+            <option value="sugarcane">Sugarcane</option>
+            <option value="maize">Maize</option>
+            <option value="potato">Potato</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="area">Cultivated Area (acres)</label>
+          <input type="number" id="area" name="area" placeholder="Enter area in acres" min="0.1" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="temperature">Average Temperature (°C)</label>
+          <input type="number" id="temperature" name="temperature" placeholder="Temperature" min="0" max="50" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="rainfall">Rainfall (mm)</label>
+          <input type="number" id="rainfall" name="rainfall" placeholder="Total rainfall" min="0" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="humidity">Humidity (%)</label>
+          <input type="number" id="humidity" name="humidity" placeholder="Average humidity" min="0" max="100" required>
+        </div>
+
+        <div class="form-group">
+          <label for="fertilizer">Fertilizer Used (kg/acre)</label>
+          <input type="number" id="fertilizer" name="fertilizer" placeholder="Fertilizer quantity" min="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="pesticide">Pesticide Used (litres/acre)</label>
+          <input type="number" id="pesticide" name="pesticide" placeholder="Pesticide quantity" min="0" step="0.1" required>
+        </div>
+
+        <div class="form-group">
+          <label for="irrigation">Irrigation (days)</label>
+          <input type="number" id="irrigation" name="irrigation" placeholder="Irrigation days" min="0" required>
+        </div>
+
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-calculator"></i> Predict Yield
+        </button>
+      </div>
+    </form>
+
+    <div class="result-box" id="resultBox">
+      <h3><i class="fas fa-chart-bar"></i> Yield Prediction Result</h3>
+      <div id="resultContent"></div>
+    </div>
+  </div>
+
+  <script>
+    // Yield factors (sample demo data)
+    const cropYieldFactors = {
+      rice: { base: 4.2, temp_factor: 0.12, rain_factor: 0.008, fert_factor: 0.05 },
+      wheat: { base: 3.8, temp_factor: -0.08, rain_factor: 0.012, fert_factor: 0.06 },
+      cotton: { base: 2.1, temp_factor: 0.15, rain_factor: 0.006, fert_factor: 0.04 },
+      sugarcane: { base: 65, temp_factor: 0.8, rain_factor: 0.25, fert_factor: 1.2 },
+      maize: { base: 5.5, temp_factor: 0.1, rain_factor: 0.01, fert_factor: 0.08 },
+      potato: { base: 22, temp_factor: -0.3, rain_factor: 0.15, fert_factor: 0.5 }
+    };
+
+    document.getElementById('yieldForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const crop = document.getElementById('crop').value;
+      const area = parseFloat(document.getElementById('area').value);
+      const temperature = parseFloat(document.getElementById('temperature').value);
+      const rainfall = parseFloat(document.getElementById('rainfall').value);
+      const humidity = parseFloat(document.getElementById('humidity').value);
+      const fertilizer = parseFloat(document.getElementById('fertilizer').value);
+      const pesticide = parseFloat(document.getElementById('pesticide').value);
+      const irrigation = parseFloat(document.getElementById('irrigation').value);
+
+      const factors = cropYieldFactors[crop];
+
+      let yieldPerAcre = factors.base +
+                        (temperature * factors.temp_factor) +
+                        (rainfall * factors.rain_factor) +
+                        (fertilizer * factors.fert_factor) +
+                        (humidity * 0.01) +
+                        (irrigation * 0.02) -
+                        (pesticide * 0.1);
+
+      yieldPerAcre = Math.max(yieldPerAcre, factors.base * 0.3);
+      const totalYield = yieldPerAcre * area;
+      const unit = crop === 'sugarcane' || crop === 'potato' ? 'tons' : 'quintals';
+
+      const prices = {
+        rice: 2000, wheat: 2100, cotton: 5500,
+        sugarcane: 3000, maize: 1800, potato: 1200
+      };
+      const pricePerUnit = prices[crop];
+      const estimatedIncome = totalYield * pricePerUnit;
+
+      document.getElementById('resultContent').innerHTML = `
+        <div class="yield-chart">
+          <h4>Predicted Yield for ${crop.charAt(0).toUpperCase() + crop.slice(1)}</h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+            <div>
+              <strong>Yield per Acre:</strong><br>
+              <span style="font-size: 1.5em; color: var(--accent);">${yieldPerAcre.toFixed(1)} ${unit}</span>
+            </div>
+            <div>
+              <strong>Total Yield:</strong><br>
+              <span style="font-size: 1.5em; color: var(--accent);">${totalYield.toFixed(1)} ${unit}</span>
+            </div>
+          </div>
+          <div style="margin-top: 1rem; padding: 1rem; background: var(--bg-primary); border-radius: 8px;">
+            <strong>Estimated Income:</strong><br>
+            <span style="font-size: 1.3em; color: var(--accent);">₹ ${estimatedIncome.toLocaleString()}</span>
+            <small style="display: block; margin-top: 0.5rem; color: var(--text-secondary);">
+              (Based on market price of ₹${pricePerUnit}/${unit})
+            </small>
+          </div>
+        </div>
+        <div style="margin-top: 1rem;">
+          <h4>Recommendations:</h4>
+          <ul style="text-align: left;">
+            ${yieldPerAcre < factors.base * 0.8 ? '<li>Increase fertilizer application for better yield</li>' : ''}
+            ${rainfall < 50 ? '<li>Ensure adequate irrigation due to low rainfall</li>' : ''}
+            ${temperature > 35 ? '<li>Use shade nets during peak summer</li>' : ''}
+            <li>Monitor crop health and apply organic manure</li>
+            <li>Implement proper drainage system for optimal growth</li>
+          </ul>
+        </div>
+      `;
+
+      document.getElementById('resultBox').classList.add('show');
+      document.getElementById('resultBox').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const root = document.documentElement;
+
+    function updateThemeIcon(theme) {
+      themeToggle.innerHTML = theme === 'dark'
+        ? '<i class="fas fa-moon"></i>'
+        : '<i class="fas fa-sun"></i>';
+    }
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    root.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const current = root.getAttribute('data-theme');
+      const newTheme = current === 'light' ? 'dark' : 'light';
+      root.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    });
+  </script>
+  <!-- Google Translate Integration (All Indian Languages) -->
+<div id="google_translate_element" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {
+        pageLanguage: 'en', 
+        includedLanguages: 'hi,bn,te,mr,ta,ur,gu,kn,ml,or,pa,as,ma,sd,sa,ks,ne,bo,km,kn,kok,doi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      },
+      'google_translate_element'
+    );
+  }
+</script>
+
+<script type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+
+<!-- Styling to match your dashboard -->
+<style>
+  #google_translate_element {
+    background: rgba(34,197,94,0.1);
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+  }
+
+  .goog-te-banner-frame.skiptranslate { display: none !important; } 
+  body { top: 0 !important; } /* Prevent page shift due to translate banner */
+</style>
+
+</body>
+</html>

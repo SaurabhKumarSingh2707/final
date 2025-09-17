@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KrishiVaani - AI Plant Disease Detection</title>
+    <link rel="icon" type="image/png" href="images/logo.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .upload-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-section:hover {
+            border-color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .upload-section.dragover {
+            border-color: #28a745;
+            background: rgba(40, 167, 69, 0.2);
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .upload-btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .options {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .option input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+        
+        .preview-section {
+            display: none;
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .preview-image {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .results-section {
+            display: none;
+            margin: 2rem 0;
+        }
+        
+        .prediction-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .prediction-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .disease-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .confidence {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: 600;
+        }
+        
+        .confidence.high { background: linear-gradient(135deg, #28a745, #20c997); }
+        .confidence.medium { background: linear-gradient(135deg, #ffc107, #fd7e14); }
+        .confidence.low { background: linear-gradient(135deg, #dc3545, #c82333); }
+        
+        .disease-info {
+            margin-top: 1rem;
+        }
+        
+        .info-item {
+            margin: 0.5rem 0;
+        }
+        
+        .info-label {
+            font-weight: 600;
+            color: #ffd700;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-bottom: 1rem;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: rgba(220, 53, 69, 0.2);
+            border: 1px solid rgba(220, 53, 69, 0.4);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        
+        .back-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .options {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+        
+        .batch-mode {
+            margin: 2rem 0;
+            text-align: center;
+        }
+        
+        .mode-toggle {
+            display: inline-flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 5px;
+            margin: 1rem 0;
+        }
+        
+        .mode-btn {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="dashboard.html" class="back-btn">← Back to Dashboard</a>
+            <div class="logo">🌱</div>
+            <h1>AI Plant Disease Detection</h1>
+            <p class="subtitle">Upload plant images for instant AI-powered disease detection</p>
+        </div>
+        
+        <div class="batch-mode">
+            <div class="mode-toggle">
+                <button class="mode-btn active" onclick="switchMode('single')">Single Image</button>
+                <button class="mode-btn" onclick="switchMode('batch')">Batch Upload</button>
+            </div>
+        </div>
+        
+        <div class="upload-section" id="uploadSection">
+            <h3 id="uploadTitle">📸 Upload Plant Image</h3>
+            <p id="uploadDesc">Drag and drop an image here or click to select</p>
+            <input type="file" id="fileInput" accept="image/*" />
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                Choose Image
+            </button>
+            
+            <div class="options">
+                <div class="option">
+                    <input type="checkbox" id="useTTA" checked>
+                    <label for="useTTA">Enhanced Accuracy (TTA)</label>
+                </div>
+                <div class="option">
+                    <input type="checkbox" id="enhanceImage" checked>
+                    <label for="enhanceImage">Image Enhancement</label>
+                </div>
+                <div class="option">
+                    <label for="topN">Top Results:</label>
+                    <select id="topN" style="margin-left: 5px; padding: 5px; border-radius: 5px; border: none;">
+                        <option value="3">3</option>
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="preview-section" id="previewSection">
+            <h3>📋 Image Preview</h3>
+            <img id="previewImage" class="preview-image" alt="Preview" />
+            <div style="margin-top: 1rem;">
+                <button class="upload-btn" onclick="analyzeImage()">🔍 Analyze Disease</button>
+                <button class="upload-btn" onclick="resetUpload()" style="background: linear-gradient(135deg, #6c757d, #495057);">
+                    🔄 Upload New Image
+                </button>
+            </div>
+        </div>
+        
+        <div class="loading" id="loadingSection">
+            <div class="spinner"></div>
+            <h3>🧠 AI Analysis in Progress...</h3>
+            <p>Please wait while our advanced AI analyzes your plant image</p>
+        </div>
+        
+        <div class="results-section" id="resultsSection">
+            <h3>📊 Disease Detection Results</h3>
+            <div id="predictionResults"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'single';
+        let uploadedImages = [];
+        let isAnalyzing = false;
+        
+        // API Configuration
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://127.0.0.1:5000' 
+            : window.location.origin;
+        
+        const API_ENDPOINTS = {
+            predict: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? `${API_BASE}/predict`
+                : `${API_BASE}/api/predict`,
+            batchPredict: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? `${API_BASE}/batch_predict`  
+                : `${API_BASE}/api/batch_predict`,
+            health: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                ? `${API_BASE}/health`
+                : `${API_BASE}/api/health`
+        };
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            checkServiceHealth();
+        });
+        
+        function setupEventListeners() {
+            const fileInput = document.getElementById('fileInput');
+            const uploadSection = document.getElementById('uploadSection');
+            
+            // File input change
+            fileInput.addEventListener('change', handleFileSelect);
+            
+            // Drag and drop
+            uploadSection.addEventListener('dragover', handleDragOver);
+            uploadSection.addEventListener('dragleave', handleDragLeave);
+            uploadSection.addEventListener('drop', handleDrop);
+        }
+        
+        function switchMode(mode) {
+            currentMode = mode;
+            const buttons = document.querySelectorAll('.mode-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const fileInput = document.getElementById('fileInput');
+            const uploadTitle = document.getElementById('uploadTitle');
+            const uploadDesc = document.getElementById('uploadDesc');
+            
+            if (mode === 'batch') {
+                fileInput.multiple = true;
+                uploadTitle.textContent = '📸 Upload Multiple Plant Images';
+                uploadDesc.textContent = 'Select multiple images for batch analysis (max 10)';
+            } else {
+                fileInput.multiple = false;
+                uploadTitle.textContent = '📸 Upload Plant Image';
+                uploadDesc.textContent = 'Drag and drop an image here or click to select';
+            }
+            
+            resetUpload();
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+        
+        function handleDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        }
+        
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        }
+        
+        function handleFiles(files) {
+            if (files.length === 0) return;
+            
+            // Validate file types
+            const validFiles = files.filter(file => file.type.startsWith('image/'));
+            
+            if (validFiles.length !== files.length) {
+                showError('Some files were ignored. Please upload only image files.');
+            }
+            
+            if (currentMode === 'single') {
+                if (validFiles.length > 0) {
+                    showPreview(validFiles[0]);
+                }
+            } else {
+                if (validFiles.length > 10) {
+                    showError('Maximum 10 images allowed in batch mode.');
+                    validFiles.splice(10);
+                }
+                uploadedImages = validFiles;
+                showBatchPreview(validFiles);
+            }
+        }
+        
+        function showPreview(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewImage = document.getElementById('previewImage');
+                previewImage.src = e.target.result;
+                previewImage.dataset.imageData = e.target.result;
+                previewImage.dataset.filename = file.name;
+                
+                document.getElementById('uploadSection').style.display = 'none';
+                document.getElementById('previewSection').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function showBatchPreview(files) {
+            // For batch mode, directly show analysis button
+            document.getElementById('uploadSection').style.display = 'none';
+            document.getElementById('previewSection').style.display = 'block';
+            
+            const previewImage = document.getElementById('previewImage');
+            previewImage.style.display = 'none';
+            
+            const previewSection = document.getElementById('previewSection');
+            previewSection.querySelector('h3').textContent = `📋 ${files.length} Images Selected`;
+            
+            // Show file list
+            let fileList = '<div style="margin: 1rem 0;">';
+            files.forEach((file, index) => {
+                fileList += `<div style="padding: 0.5rem; background: rgba(255,255,255,0.1); margin: 0.5rem 0; border-radius: 8px;">${index + 1}. ${file.name}</div>`;
+            });
+            fileList += '</div>';
+            
+            previewSection.querySelector('h3').insertAdjacentHTML('afterend', fileList);
+        }
+        
+        async function analyzeImage() {
+            if (isAnalyzing) return;
+            
+            isAnalyzing = true;
+            
+            // Show loading
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+            
+            try {
+                if (currentMode === 'single') {
+                    await analyzeSingleImage();
+                } else {
+                    await analyzeBatchImages();
+                }
+            } catch (error) {
+                showError(`Analysis failed: ${error.message}`);
+            } finally {
+                isAnalyzing = false;
+                document.getElementById('loadingSection').style.display = 'none';
+            }
+        }
+        
+        async function analyzeSingleImage() {
+            const previewImage = document.getElementById('previewImage');
+            const imageData = previewImage.dataset.imageData;
+            const filename = previewImage.dataset.filename;
+            
+            const requestData = {
+                image: imageData,
+                filename: filename,
+                use_tta: document.getElementById('useTTA').checked,
+                enhance_image: document.getElementById('enhanceImage').checked,
+                top_n: parseInt(document.getElementById('topN').value)
+            };
+            
+            const response = await fetch(API_ENDPOINTS.predict, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            });
+            
+            const result = await response.json();
+            
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || result.data?.error || 'Analysis failed');
+            }
+            
+            displayResults([result.data || result.results]);
+        }
+        
+        async function analyzeBatchImages() {
+            const imagesData = [];
+            
+            // Convert all images to base64
+            for (let i = 0; i < uploadedImages.length; i++) {
+                const file = uploadedImages[i];
+                const base64 = await fileToBase64(file);
+                imagesData.push({
+                    image: base64,
+                    filename: file.name
+                });
+            }
+            
+            const requestData = {
+                images: imagesData,
+                use_tta: document.getElementById('useTTA').checked
+            };
+            
+            const response = await fetch(API_ENDPOINTS.batchPredict, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData)
+            });
+            
+            const result = await response.json();
+            
+            if (!response.ok || !result.success) {
+                throw new Error(result.error || result.data?.error || 'Batch analysis failed');
+            }
+            
+            displayResults(result.data?.results || result.results);
+        }
+        
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+        
+        function displayResults(results) {
+            const resultsContainer = document.getElementById('predictionResults');
+            resultsContainer.innerHTML = '';
+            
+            results.forEach((result, index) => {
+                if (result.error) {
+                    resultsContainer.innerHTML += `
+                        <div class="error">
+                            <strong>Error in image ${index + 1}:</strong> ${result.error}
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const predictions = result.predictions || result.top_predictions || [];
+                
+                let cardHTML = `
+                    <div class="prediction-card">
+                        ${currentMode === 'batch' ? `<h4>Image ${index + 1}: ${result.image_info?.filename || 'Unknown'}</h4>` : ''}
+                `;
+                
+                predictions.forEach((pred, predIndex) => {
+                    const confidence = parseFloat(pred.confidence || pred.score || 0);
+                    const confidenceClass = confidence > 0.8 ? 'high' : confidence > 0.5 ? 'medium' : 'low';
+                    
+                    cardHTML += `
+                        <div style="margin: 1rem 0; padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 10px;">
+                            <div class="prediction-header">
+                                <div class="disease-name">${pred.class_name || pred.disease || pred.name}</div>
+                                <div class="confidence ${confidenceClass}">${(confidence * 100).toFixed(1)}%</div>
+                            </div>
+                            ${pred.description ? `<div class="disease-info">
+                                <div class="info-item"><span class="info-label">Description:</span> ${pred.description}</div>
+                                ${pred.treatment ? `<div class="info-item"><span class="info-label">Treatment:</span> ${pred.treatment}</div>` : ''}
+                                ${pred.prevention ? `<div class="info-item"><span class="info-label">Prevention:</span> ${pred.prevention}</div>` : ''}
+                            </div>` : ''}
+                        </div>
+                    `;
+                });
+                
+                cardHTML += '</div>';
+                resultsContainer.innerHTML += cardHTML;
+            });
+            
+            document.getElementById('resultsSection').style.display = 'block';
+        }
+        
+        function resetUpload() {
+            document.getElementById('uploadSection').style.display = 'block';
+            document.getElementById('previewSection').style.display = 'none';
+            document.getElementById('loadingSection').style.display = 'none';
+            document.getElementById('resultsSection').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            uploadedImages = [];
+            
+            // Clear any dynamically added content
+            const previewSection = document.getElementById('previewSection');
+            const extraDivs = previewSection.querySelectorAll('div[style*="margin: 1rem 0"]');
+            extraDivs.forEach(div => div.remove());
+            
+            document.getElementById('previewImage').style.display = 'block';
+        }
+        
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.innerHTML = `<strong>Error:</strong> ${message}`;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(errorDiv, container.firstChild);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+        
+        async function checkServiceHealth() {
+            try {
+                const response = await fetch(API_ENDPOINTS.health);
+                const result = await response.json();
+                
+                if (!response.ok || !result.success) {
+                    showError('Disease prediction service is not available. Please try again later.');
+                }
+            } catch (error) {
+                console.log('Service health check failed:', error);
+                showError('Unable to connect to disease prediction service.');
+            }
+        }
+    </script>
+</body>
+</html>

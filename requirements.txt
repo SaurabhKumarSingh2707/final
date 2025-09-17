@@ -1,0 +1,23 @@
+# Vercel Serverless Requirements
+# Optimized for serverless deployment with smaller footprint
+
+# Core ML libraries
+tensorflow==2.13.0
+numpy>=1.24.0
+pillow>=10.0.0
+
+# Web framework (not needed for serverless, but keep for local testing)
+# flask>=2.3.0
+
+# Basic image processing
+# opencv-python-headless>=4.8.0  # Comment out to reduce size
+
+# Optional visualization (comment out to reduce deployment size)
+# matplotlib>=3.7.0
+# seaborn>=0.13.0
+
+# Utilities
+scikit-learn>=1.3.0
+
+# Keep package size minimal for faster cold starts
+# Total deployment should be under 250MB for Vercel

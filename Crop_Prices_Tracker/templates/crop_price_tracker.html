@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="icon" type="image/png" href="../../images/logo.png">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crop Price Tracker</title>
+    <link rel="stylesheet" href="../static/styles.css">
+    <link rel="stylesheet" href="../../theme.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <button class="theme-toggle" aria-label="Toggle dark/light mode" style="background: rgba(46, 125, 50, 0.1); border: 1px solid rgba(46, 125, 50, 0.3); color: #2e7d32; position: absolute; top: 20px; right: 20px; z-index: 1000;">
+        <i class="fas fa-sun sun-icon"></i>
+        <i class="fas fa-moon moon-icon"></i>
+        <span class="theme-text">Light</span>
+      </button>
+      <a href="../../dashboard.html" class="back-button">Back to Dashboard</a>
+      <h2>🌾 Crop Price Tracker</h2>
+      <div style="width: 120px"></div>
+    </div>
+
+    <div class="form-container">
+      <form id="priceForm">
+        <div class="form-row">
+          <label for="crop" class="form-label">Select Crop</label>
+          <select name="crop" id="crop" required>
+            <option value="">-- Choose your crop --</option>
+            
+            <!-- Cereals & Grains -->
+            <optgroup label="🌾 Cereals & Grains">
+              <option value="wheat">Wheat</option>
+              <option value="rice">Rice (Paddy)</option>
+              <option value="maize">Maize (Corn)</option>
+              <option value="barley">Barley</option>
+              <option value="jowar">Jowar (Sorghum)</option>
+              <option value="bajra">Bajra (Pearl Millet)</option>
+              <option value="ragi">Ragi (Finger Millet)</option>
+              <option value="oats">Oats</option>
+            </optgroup>
+            
+            <!-- Pulses -->
+            <optgroup label="🫘 Pulses">
+              <option value="gram">Gram (Chana)</option>
+              <option value="tur">Tur (Arhar)</option>
+              <option value="moong">Moong</option>
+              <option value="urad">Urad</option>
+              <option value="masoor">Masoor (Lentil)</option>
+              <option value="rajma">Rajma</option>
+              <option value="lobia">Lobia (Black-eyed pea)</option>
+              <option value="kulthi">Kulthi (Horse gram)</option>
+            </optgroup>
+            
+            <!-- Oilseeds -->
+            <optgroup label="🌻 Oilseeds">
+              <option value="soybean">Soybean</option>
+              <option value="groundnut">Groundnut (Peanut)</option>
+              <option value="mustard">Mustard</option>
+              <option value="sunflower">Sunflower</option>
+              <option value="sesame">Sesame (Til)</option>
+              <option value="safflower">Safflower</option>
+              <option value="linseed">Linseed</option>
+              <option value="castor">Castor</option>
+              <option value="niger">Niger</option>
+            </optgroup>
+            
+            <!-- Cash Crops -->
+            <optgroup label="💰 Cash Crops">
+              <option value="cotton">Cotton</option>
+              <option value="sugarcane">Sugarcane</option>
+              <option value="jute">Jute</option>
+              <option value="tobacco">Tobacco</option>
+              <option value="tea">Tea</option>
+              <option value="coffee">Coffee</option>
+              <option value="rubber">Rubber</option>
+            </optgroup>
+            
+            <!-- Vegetables -->
+            <optgroup label="🥬 Vegetables">
+              <option value="onion">Onion</option>
+              <option value="potato">Potato</option>
+              <option value="tomato">Tomato</option>
+              <option value="cabbage">Cabbage</option>
+              <option value="cauliflower">Cauliflower</option>
+              <option value="brinjal">Brinjal (Eggplant)</option>
+              <option value="okra">Okra (Bhindi)</option>
+              <option value="carrot">Carrot</option>
+              <option value="radish">Radish</option>
+              <option value="beans">Beans</option>
+              <option value="peas">Green Peas</option>
+              <option value="capsicum">Capsicum</option>
+              <option value="cucumber">Cucumber</option>
+              <option value="bottle_gourd">Bottle Gourd</option>
+              <option value="bitter_gourd">Bitter Gourd</option>
+              <option value="ridge_gourd">Ridge Gourd</option>
+              <option value="pumpkin">Pumpkin</option>
+              <option value="spinach">Spinach</option>
+              <option value="coriander">Coriander</option>
+              <option value="mint">Mint</option>
+              <option value="fenugreek">Fenugreek Leaves</option>
+              <option value="green_chili">Green Chili</option>
+              <option value="ginger">Ginger</option>
+              <option value="garlic">Garlic</option>
+            </optgroup>
+            
+            <!-- Fruits -->
+            <optgroup label="🍎 Fruits">
+              <option value="mango">Mango</option>
+              <option value="banana">Banana</option>
+              <option value="apple">Apple</option>
+              <option value="orange">Orange</option>
+              <option value="grapes">Grapes</option>
+              <option value="pomegranate">Pomegranate</option>
+              <option value="papaya">Papaya</option>
+              <option value="guava">Guava</option>
+              <option value="lemon">Lemon</option>
+              <option value="watermelon">Watermelon</option>
+              <option value="muskmelon">Muskmelon</option>
+              <option value="pineapple">Pineapple</option>
+              <option value="litchi">Litchi</option>
+              <option value="coconut">Coconut</option>
+              <option value="dates">Dates</option>
+              <option value="fig">Fig</option>
+              <option value="jackfruit">Jackfruit</option>
+            </optgroup>
+            
+            <!-- Spices -->
+            <optgroup label="🌶️ Spices">
+              <option value="turmeric">Turmeric</option>
+              <option value="coriander_seed">Coriander Seed</option>
+              <option value="cumin">Cumin</option>
+              <option value="fenugreek_seed">Fenugreek Seed</option>
+              <option value="red_chili">Red Chili</option>
+              <option value="black_pepper">Black Pepper</option>
+              <option value="cardamom">Cardamom</option>
+              <option value="cloves">Cloves</option>
+              <option value="cinnamon">Cinnamon</option>
+              <option value="nutmeg">Nutmeg</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="state" class="form-label">Select State</label>
+          <select name="state" id="state" required disabled>
+            <option value="">-- First select a crop --</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="market" class="form-label">Select Market</label>
+          <select name="market" id="market" required disabled>
+            <option value="">-- First select a state --</option>
+          </select>
+        </div>
+
+        <button type="submit" class="submit-button" id="submitBtn" disabled>
+          Track Prices
+        </button>
+      </form>
+    </div>
+
+    <div id="errorMessage" class="error" style="display: none;">
+      <strong>⚠️ Error:</strong> <span id="errorText"></span>
+    </div>
+
+    <div id="resultsContainer" class="results-container" style="display: none;">
+      <h3>📈 Latest Market Prices</h3>
+      <div class="price-grid" id="priceGrid">
+        <!-- Results will be populated here -->
+      </div>
+    </div>
+
+    <script>
+      // All Indian states with their major markets
+      const allStates = [
+        'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 
+        'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 
+        'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 
+        'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 
+        'Uttarakhand', 'West Bengal', 'Delhi'
+      ];
+
+      const stateMarkets = {
+        'Andhra Pradesh': ['Vijayawada', 'Visakhapatnam', 'Guntur', 'Nellore', 'Kurnool', 'Anantapur', 'Kadapa', 'Chittoor', 'Eluru', 'Ongole'],
+        'Arunachal Pradesh': ['Itanagar', 'Naharlagun', 'Pasighat', 'Tezpur', 'Bomdila'],
+        'Assam': ['Guwahati', 'Dibrugarh', 'Silchar', 'Jorhat', 'Nagaon', 'Tinsukia', 'Barpeta', 'Dhubri', 'Karimganj', 'Sivasagar'],
+        'Bihar': ['Patna', 'Muzaffarpur', 'Darbhanga', 'Begusarai', 'Gaya', 'Bhagalpur', 'Purnia', 'Saharsa', 'Sitamarhi', 'Madhepura'],
+        'Chhattisgarh': ['Raipur', 'Bilaspur', 'Korba', 'Durg', 'Rajnandgaon', 'Jagdalpur', 'Raigarh', 'Ambikapur', 'Mahasamund', 'Dhamtari'],
+        'Goa': ['Panaji', 'Margao', 'Vasco da Gama', 'Mapusa', 'Ponda', 'Bicholim'],
+        'Gujarat': ['Ahmedabad', 'Surat', 'Vadodara', 'Rajkot', 'Bhavnagar', 'Jamnagar', 'Junagadh', 'Gandhinagar', 'Anand', 'Mehsana'],
+        'Haryana': ['Gurugram', 'Faridabad', 'Hisar', 'Karnal', 'Panipat', 'Ambala', 'Yamunanagar', 'Rohtak', 'Sirsa', 'Kurukshetra'],
+        'Himachal Pradesh': ['Shimla', 'Dharamshala', 'Solan', 'Mandi', 'Palampur', 'Kullu', 'Hamirpur', 'Una', 'Bilaspur', 'Chamba'],
+        'Jharkhand': ['Ranchi', 'Jamshedpur', 'Dhanbad', 'Bokaro', 'Deoghar', 'Hazaribagh', 'Giridih', 'Ramgarh', 'Medininagar', 'Chaibasa'],
+        'Karnataka': ['Bangalore', 'Mysore', 'Mangalore', 'Hubli', 'Belgaum', 'Davangere', 'Bellary', 'Bijapur', 'Gulbarga', 'Tumkur'],
+        'Kerala': ['Thiruvananthapuram', 'Kochi', 'Kozhikode', 'Thrissur', 'Alappuzha', 'Kollam', 'Palakkad', 'Kannur', 'Kottayam', 'Malappuram'],
+        'Madhya Pradesh': ['Bhopal', 'Indore', 'Gwalior', 'Jabalpur', 'Ujjain', 'Sagar', 'Dewas', 'Satna', 'Ratlam', 'Rewa'],
+        'Maharashtra': ['Mumbai', 'Pune', 'Nagpur', 'Nashik', 'Aurangabad', 'Solapur', 'Amravati', 'Sangli', 'Kolhapur', 'Akola'],
+        'Manipur': ['Imphal', 'Thoubal', 'Bishnupur', 'Churachandpur', 'Kakching'],
+        'Meghalaya': ['Shillong', 'Tura', 'Jowai', 'Nongpoh', 'Baghmara'],
+        'Mizoram': ['Aizawl', 'Lunglei', 'Saiha', 'Champhai', 'Kolasib'],
+        'Nagaland': ['Kohima', 'Dimapur', 'Mokokchung', 'Tuensang', 'Wokha'],
+        'Odisha': ['Bhubaneswar', 'Cuttack', 'Berhampur', 'Sambalpur', 'Rourkela', 'Balasore', 'Puri', 'Jharsuguda', 'Bargarh', 'Kendrapara'],
+        'Punjab': ['Ludhiana', 'Amritsar', 'Jalandhar', 'Patiala', 'Bathinda', 'Mohali', 'Firozpur', 'Pathankot', 'Moga', 'Abohar'],
+        'Rajasthan': ['Jaipur', 'Jodhpur', 'Kota', 'Bikaner', 'Ajmer', 'Udaipur', 'Bhilwara', 'Alwar', 'Bharatpur', 'Sikar'],
+        'Sikkim': ['Gangtok', 'Namchi', 'Gyalshing', 'Mangan'],
+        'Tamil Nadu': ['Chennai', 'Coimbatore', 'Madurai', 'Tiruchirappalli', 'Salem', 'Tirunelveli', 'Tiruppur', 'Vellore', 'Erode', 'Thanjavur'],
+        'Telangana': ['Hyderabad', 'Warangal', 'Nizamabad', 'Khammam', 'Karimnagar', 'Ramagundam', 'Mahbubnagar', 'Nalgonda', 'Adilabad', 'Suryapet'],
+        'Tripura': ['Agartala', 'Dharmanagar', 'Udaipur', 'Kailasahar', 'Belonia'],
+        'Uttar Pradesh': ['Lucknow', 'Kanpur', 'Ghaziabad', 'Agra', 'Varanasi', 'Meerut', 'Allahabad', 'Bareilly', 'Aligarh', 'Moradabad'],
+        'Uttarakhand': ['Dehradun', 'Haridwar', 'Roorkee', 'Haldwani', 'Rudrapur', 'Kashipur', 'Rishikesh', 'Kotdwar', 'Pithoragarh', 'Almora'],
+        'West Bengal': ['Kolkata', 'Howrah', 'Durgapur', 'Asansol', 'Siliguri', 'Burdwan', 'Malda', 'Kharagpur', 'Haldia', 'Krishnanagar'],
+        'Delhi': ['New Delhi', 'Central Delhi', 'North Delhi', 'South Delhi', 'East Delhi', 'West Delhi', 'Azadpur Mandi', 'Ghazipur Mandi']
+      };
+
+      // Mock data for crop prices with all states
+      const cropData = {
+        // Cereals & Grains
+        wheat: {
+          states: ['Punjab', 'Haryana', 'Uttar Pradesh', 'Rajasthan', 'Madhya Pradesh', 'Bihar', 'Gujarat', 'Maharashtra', 'Karnataka', 'Delhi'],
+          markets: stateMarkets
+        },
+        rice: {
+          states: ['West Bengal', 'Uttar Pradesh', 'Punjab', 'Odisha', 'Andhra Pradesh', 'Tamil Nadu', 'Karnataka', 'Assam', 'Bihar', 'Chhattisgarh'],
+          markets: stateMarkets
+        },
+        maize: {
+          states: ['Karnataka', 'Andhra Pradesh', 'Maharashtra', 'Bihar', 'Rajasthan', 'Uttar Pradesh', 'Madhya Pradesh', 'Gujarat', 'Punjab', 'Haryana'],
+          markets: stateMarkets
+        },
+        barley: {
+          states: ['Rajasthan', 'Uttar Pradesh', 'Madhya Pradesh', 'Haryana', 'Punjab', 'Bihar', 'Gujarat', 'Maharashtra', 'Karnataka', 'West Bengal'],
+          markets: stateMarkets
+        },
+        jowar: {
+          states: ['Maharashtra', 'Karnataka', 'Andhra Pradesh', 'Madhya Pradesh', 'Gujarat', 'Rajasthan', 'Tamil Nadu', 'Uttar Pradesh', 'Haryana', 'Telangana'],
+          markets: stateMarkets
+        },
+        bajra: {
+          states: ['Rajasthan', 'Maharashtra', 'Gujarat', 'Uttar Pradesh', 'Haryana', 'Madhya Pradesh', 'Karnataka', 'Andhra Pradesh', 'Tamil Nadu', 'Punjab'],
+          markets: stateMarkets
+        },
+        ragi: {
+          states: ['Karnataka', 'Tamil Nadu', 'Andhra Pradesh', 'Odisha', 'Maharashtra', 'Gujarat', 'Uttarakhand', 'Jharkhand', 'Kerala', 'Telangana'],
+          markets: stateMarkets
+        },
+        oats: {
+          states: ['Punjab', 'Haryana', 'Uttar Pradesh', 'Rajasthan', 'Madhya Pradesh', 'Bihar', 'Himachal Pradesh', 'Uttarakhand', 'Gujarat', 'Maharashtra'],
+          markets: stateMarkets
+        },
+
+        // Pulses
+        gram: {
+          states: ['Madhya Pradesh', 'Rajasthan', 'Maharashtra', 'Uttar Pradesh', 'Karnataka', 'Andhra Pradesh', 'Chhattisgarh', 'Gujarat', 'Jharkhand', 'Bihar'],
+          markets: stateMarkets
+        },
+        tur: {
+          states: ['Maharashtra', 'Karnataka', 'Madhya Pradesh', 'Gujarat', 'Andhra Pradesh', 'Odisha', 'Jharkhand', 'Uttar Pradesh', 'Tamil Nadu', 'Telangana'],
+          markets: stateMarkets
+        },
+        moong: {
+          states: ['Rajasthan', 'Maharashtra', 'Andhra Pradesh', 'Karnataka', 'Odisha', 'Madhya Pradesh', 'Gujarat', 'Tamil Nadu', 'Uttar Pradesh', 'Haryana'],
+          markets: stateMarkets
+        },
+        urad: {
+          states: ['Madhya Pradesh', 'Uttar Pradesh', 'Andhra Pradesh', 'Maharashtra', 'Rajasthan', 'Karnataka', 'Tamil Nadu', 'Chhattisgarh', 'Jharkhand', 'Odisha'],
+          markets: stateMarkets
+        },
+        masoor: {
+          states: ['Madhya Pradesh', 'Uttar Pradesh', 'Bihar', 'West Bengal', 'Rajasthan', 'Maharashtra', 'Chhattisgarh', 'Jharkhand', 'Karnataka', 'Odisha'],
+          markets: stateMarkets
+        },
+        rajma: {
+          states: ['Jammu and Kashmir', 'Himachal Pradesh', 'Uttarakhand', 'Uttar Pradesh', 'Maharashtra', 'Karnataka', 'Tamil Nadu', 'Andhra Pradesh', 'Punjab', 'Haryana'],
+          markets: stateMarkets
+        },
+        lobia: {
+          states: ['Maharashtra', 'Madhya Pradesh', 'Rajasthan', 'Karnataka', 'Tamil Nadu', 'Andhra Pradesh', 'Gujarat', 'Uttar Pradesh', 'Haryana', 'Punjab'],
+          markets: stateMarkets
+        },
+        kulthi: {
+          states: ['Odisha', 'Chhattisgarh', 'Jharkhand', 'Karnataka', 'Andhra Pradesh', 'Maharashtra', 'Madhya Pradesh', 'Tamil Nadu', 'Uttarakhand', 'Himachal Pradesh'],
+          markets: stateMarkets
+        },
+
+        // Oilseeds
+        soybean: {
+          states: ['Madhya Pradesh', 'Maharashtra', 'Rajasthan', 'Karnataka', 'Telangana', 'Andhra Pradesh', 'Gujarat', 'Chhattisgarh', 'Uttar Pradesh', 'Jharkhand'],
+          markets: stateMarkets
+        },
+        groundnut: {
+          states: ['Gujarat', 'Andhra Pradesh', 'Tamil Nadu', 'Karnataka', 'Maharashtra', 'Rajasthan', 'Madhya Pradesh', 'Odisha', 'Telangana', 'West Bengal'],
+          markets: stateMarkets
+        },
+        mustard: {
+          states: ['Rajasthan', 'Haryana', 'Madhya Pradesh', 'Uttar Pradesh', 'Gujarat', 'West Bengal', 'Punjab', 'Bihar', 'Assam', 'Himachal Pradesh'],
+          markets: stateMarkets
+        },
+        sunflower: {
+          states: ['Karnataka', 'Andhra Pradesh', 'Maharashtra', 'Bihar', 'Odisha', 'Tamil Nadu', 'Haryana', 'Punjab', 'Rajasthan', 'Telangana'],
+          markets: stateMarkets
+        },
+        sesame: {
+          states: ['West Bengal', 'Madhya Pradesh', 'Uttar Pradesh', 'Rajasthan', 'Gujarat', 'Andhra Pradesh', 'Tamil Nadu', 'Karnataka', 'Odisha', 'Maharashtra'],
+          markets: stateMarkets
+        },
+        safflower: {
+          states: ['Maharashtra', 'Karnataka', 'Madhya Pradesh', 'Andhra Pradesh', 'Gujarat', 'Odisha', 'Rajasthan', 'Haryana', 'Bihar', 'Telangana'],
+          markets: stateMarkets
+        },
+        linseed: {
+          states: ['Madhya Pradesh', 'Chhattisgarh', 'Maharashtra', 'Bihar', 'Uttar Pradesh', 'Rajasthan', 'Jharkhand', 'Odisha', 'West Bengal', 'Karnataka'],
+          markets: stateMarkets
+        },
+        castor: {
+          states: ['Gujarat', 'Rajasthan', 'Andhra Pradesh', 'Telangana', 'Karnataka', 'Tamil Nadu', 'Maharashtra', 'Madhya Pradesh', 'Haryana', 'Odisha'],
+          markets: stateMarkets
+        },
+        niger: {
+          states: ['Odisha', 'Chhattisgarh', 'Madhya Pradesh', 'Bihar', 'Jharkhand', 'West Bengal', 'Assam', 'Maharashtra', 'Andhra Pradesh', 'Karnataka'],
+          markets: stateMarkets
+        },
+
+        // Cash Crops
+        cotton: {
+          states: ['Gujarat', 'Maharashtra', 'Andhra Pradesh', 'Karnataka', 'Haryana', 'Punjab', 'Rajasthan', 'Madhya Pradesh', 'Telangana', 'Tamil Nadu'],
+          markets: stateMarkets
+        },
+        sugarcane: {
+          states: ['Uttar Pradesh', 'Maharashtra', 'Karnataka', 'Tamil Nadu', 'Andhra Pradesh', 'Gujarat', 'Bihar', 'Haryana', 'Punjab', 'Uttarakhand'],
+          markets: stateMarkets
+        },
+        jute: {
+          states: ['West Bengal', 'Bihar', 'Assam', 'Odisha', 'Meghalaya', 'Tripura', 'Andhra Pradesh', 'Uttar Pradesh', 'Chhattisgarh', 'Maharashtra'],
+          markets: stateMarkets
+        },
+        tobacco: {
+          states: ['Andhra Pradesh', 'Gujarat', 'Karnataka', 'West Bengal', 'Uttar Pradesh', 'Bihar', 'Tamil Nadu', 'Maharashtra', 'Odisha', 'Assam'],
+          markets: stateMarkets
+        },
+        tea: {
+          states: ['Assam', 'West Bengal', 'Tamil Nadu', 'Kerala', 'Karnataka', 'Himachal Pradesh', 'Uttarakhand', 'Arunachal Pradesh', 'Manipur', 'Mizoram'],
+          markets: stateMarkets
+        },
+        coffee: {
+          states: ['Karnataka', 'Kerala', 'Tamil Nadu', 'Andhra Pradesh', 'Odisha', 'Assam', 'Arunachal Pradesh', 'Manipur', 'Meghalaya', 'Mizoram'],
+          markets: stateMarkets
+        },
+        rubber: {
+          states: ['Kerala', 'Tamil Nadu', 'Karnataka', 'Andhra Pradesh', 'Assam', 'Tripura', 'Meghalaya', 'Manipur', 'Nagaland', 'Mizoram'],
+          markets: stateMarkets
+        },
+
+        // Common vegetables and fruits (using all states for wider availability)
+        onion: {
+          states: ['Maharashtra', 'Karnataka', 'Gujarat', 'Madhya Pradesh', 'Bihar', 'Andhra Pradesh', 'Rajasthan', 'Haryana', 'Uttar Pradesh', 'West Bengal'],
+          markets: stateMarkets
+        },
+        potato: {
+          states: ['Uttar Pradesh', 'West Bengal', 'Bihar', 'Punjab', 'Haryana', 'Madhya Pradesh', 'Gujarat', 'Karnataka', 'Assam', 'Jharkhand'],
+          markets: stateMarkets
+        },
+        tomato: {
+          states: ['Andhra Pradesh', 'Karnataka', 'Maharashtra', 'Madhya Pradesh', 'Gujarat', 'Uttar Pradesh', 'Haryana', 'Punjab', 'Tamil Nadu', 'West Bengal'],
+          markets: stateMarkets
+        }
+      };
+
+      // Generate mock price data
+      function generateMockPrices(crop, state, market) {
+        const basePrice = {
+          // Cereals & Grains (per quintal)
+          wheat: 2100,
+          rice: 2800,
+          maize: 1900,
+          barley: 1800,
+          jowar: 2300,
+          bajra: 2200,
+          ragi: 3200,
+          oats: 2500,
+
+          // Pulses (per quintal)
+          gram: 5800,
+          tur: 6500,
+          moong: 7200,
+          urad: 6800,
+          masoor: 5500,
+          rajma: 8500,
+          lobia: 4200,
+          kulthi: 3800,
+
+          // Oilseeds (per quintal)
+          soybean: 4200,
+          groundnut: 5200,
+          mustard: 4800,
+          sunflower: 5500,
+          sesame: 8500,
+          safflower: 4500,
+          linseed: 4800,
+          castor: 5800,
+          niger: 6200,
+
+          // Cash Crops
+          cotton: 5500, // per quintal
+          sugarcane: 350, // per quintal
+          jute: 4200, // per quintal
+          tobacco: 12000, // per quintal
+          tea: 1500, // per kg (converted to per quintal equivalent)
+          coffee: 8500, // per quintal
+          rubber: 18000, // per quintal
+
+          // Vegetables (per quintal)
+          onion: 2500,
+          potato: 1200,
+          tomato: 3200,
+          cabbage: 1800,
+          cauliflower: 2200,
+          brinjal: 2800,
+          okra: 3500,
+          carrot: 2000,
+          radish: 1500,
+          beans: 4200,
+          peas: 4800,
+          capsicum: 4500,
+          cucumber: 2200,
+          bottle_gourd: 1800,
+          bitter_gourd: 3200,
+          ridge_gourd: 2800,
+          pumpkin: 1600,
+          spinach: 2500,
+          coriander: 8500,
+          mint: 12000,
+          fenugreek: 3500,
+          green_chili: 4800,
+          ginger: 8500,
+          garlic: 12000,
+
+          // Fruits (per quintal)
+          mango: 4200,
+          banana: 2800,
+          apple: 8500,
+          orange: 3500,
+          grapes: 6500,
+          pomegranate: 8500,
+          papaya: 2200,
+          guava: 3200,
+          lemon: 4800,
+          watermelon: 1200,
+          muskmelon: 1800,
+          pineapple: 3500,
+          litchi: 6500,
+          coconut: 12000,
+          dates: 25000,
+          fig: 18000,
+          jackfruit: 2800,
+
+          // Spices (per quintal)
+          turmeric: 8500,
+          coriander_seed: 12000,
+          cumin: 35000,
+          fenugreek_seed: 4500,
+          red_chili: 15000,
+          black_pepper: 85000,
+          cardamom: 120000,
+          cloves: 150000,
+          cinnamon: 45000,
+          nutmeg: 85000
+        };
+
+        const prices = [];
+        const today = new Date();
+        
+        for (let i = 0; i < 5; i++) {
+          const date = new Date(today);
+          date.setDate(date.getDate() - i);
+          
+          // Different price variation ranges based on crop type
+          let variationRange = 400; // Default ±200
+          
+          // High-value spices have larger variations
+          if (['black_pepper', 'cardamom', 'cloves', 'cinnamon', 'nutmeg', 'cumin'].includes(crop)) {
+            variationRange = 8000; // ±4000
+          } else if (['dates', 'fig', 'turmeric', 'coriander_seed', 'red_chili'].includes(crop)) {
+            variationRange = 2000; // ±1000
+          } else if (['tea', 'coffee', 'rubber', 'tobacco'].includes(crop)) {
+            variationRange = 1200; // ±600
+          }
+          
+          const variation = (Math.random() - 0.5) * variationRange;
+          const price = Math.round((basePrice[crop] || 2500) + variation);
+          
+          prices.push({
+            arrival_date: date.toLocaleDateString('en-IN'),
+            modal_price: price,
+            market: market,
+            state: state
+          });
+        }
+        
+        return prices;
+      }
+
+      const cropSelect = document.getElementById("crop");
+      const stateSelect = document.getElementById("state");
+      const marketSelect = document.getElementById("market");
+      const submitBtn = document.getElementById("submitBtn");
+      const errorMessage = document.getElementById("errorMessage");
+      const resultsContainer = document.getElementById("resultsContainer");
+      const priceGrid = document.getElementById("priceGrid");
+
+      // Enable/disable submit button based on form completion
+      function updateSubmitButton() {
+        const isFormComplete = cropSelect.value && stateSelect.value && marketSelect.value;
+        submitBtn.disabled = !isFormComplete;
+      }
+
+      // Show error message
+      function showError(message) {
+        document.getElementById("errorText").textContent = message;
+        errorMessage.style.display = "block";
+        resultsContainer.style.display = "none";
+      }
+
+      // Show results
+      function showResults(prices) {
+        errorMessage.style.display = "none";
+        priceGrid.innerHTML = "";
+        
+        prices.forEach(price => {
+          const priceCard = document.createElement("div");
+          priceCard.className = "price-card";
+          priceCard.innerHTML = `
+            <div class="price-date">${price.arrival_date}</div>
+            <div class="price-amount">₹${price.modal_price} / quintal</div>
+            <div class="price-location">${price.market}, ${price.state}</div>
+          `;
+          priceGrid.appendChild(priceCard);
+        });
+        
+        resultsContainer.style.display = "block";
+      }
+
+      cropSelect.addEventListener("change", function () {
+        const crop = this.value;
+        stateSelect.innerHTML = '<option value="">-- Select State --</option>';
+        stateSelect.disabled = true;
+        marketSelect.innerHTML = '<option value="">-- First select a state --</option>';
+        marketSelect.disabled = true;
+        
+        if (crop && cropData[crop]) {
+          // Use crop-specific states first, then add all other states
+          const cropStates = cropData[crop].states;
+          const otherStates = allStates.filter(state => !cropStates.includes(state));
+          const combinedStates = [...cropStates, ...otherStates];
+          
+          combinedStates.forEach(state => {
+            stateSelect.innerHTML += `<option value="${state}">${state}</option>`;
+          });
+          stateSelect.disabled = false;
+        } else if (crop) {
+          // For crops not in mock data, show all states
+          allStates.forEach(state => {
+            stateSelect.innerHTML += `<option value="${state}">${state}</option>`;
+          });
+          stateSelect.disabled = false;
+        }
+        
+        updateSubmitButton();
+      });
+
+      stateSelect.addEventListener("change", function () {
+        const crop = cropSelect.value;
+        const state = this.value;
+        
+        marketSelect.innerHTML = '<option value="">-- Select Market --</option>';
+        marketSelect.disabled = true;
+        
+        if (state) {
+          if (stateMarkets[state]) {
+            // Use actual markets for the selected state
+            stateMarkets[state].forEach(market => {
+              marketSelect.innerHTML += `<option value="${market}">${market}</option>`;
+            });
+          } else {
+            // Fallback generic markets (shouldn't happen now)
+            const genericMarkets = ['Main Market', 'Agricultural Market', 'Wholesale Market', 'Mandi'];
+            genericMarkets.forEach(market => {
+              marketSelect.innerHTML += `<option value="${market}">${market}</option>`;
+            });
+          }
+          marketSelect.disabled = false;
+        }
+        
+        updateSubmitButton();
+      });
+
+      marketSelect.addEventListener("change", updateSubmitButton);
+
+      // Form submission
+      document.getElementById("priceForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+        
+        const crop = cropSelect.value;
+        const state = stateSelect.value;
+        const market = marketSelect.value;
+        
+        if (!crop || !state || !market) {
+          showError("Please select all fields");
+          return;
+        }
+        
+        // Show loading state
+        submitBtn.classList.add("loading");
+        submitBtn.textContent = "Fetching Prices...";
+        submitBtn.disabled = true;
+        
+        // Simulate API call delay
+        setTimeout(() => {
+          const prices = generateMockPrices(crop, state, market);
+          showResults(prices);
+          
+          // Reset button
+          submitBtn.classList.remove("loading");
+          submitBtn.textContent = "Track Prices";
+          submitBtn.disabled = false;
+        }, 1500);
+      });
+
+      updateSubmitButton();
+    </script>
+    <script src="../../theme.js"></script>
+    <!-- Google Translate Integration (All Indian Languages) -->
+<div id="google_translate_element" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {
+        pageLanguage: 'en', 
+        includedLanguages: 'hi,bn,te,mr,ta,ur,gu,kn,ml,or,pa,as,ma,sd,sa,ks,ne,bo,km,kn,kok,doi',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      },
+      'google_translate_element'
+    );
+  }
+</script>
+
+<script type="text/javascript" 
+  src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+</script>
+
+<!-- Styling to match your dashboard -->
+<style>
+  #google_translate_element {
+    background: rgba(34,197,94,0.1);
+    padding: 6px 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+  }
+
+  .goog-te-banner-frame.skiptranslate { display: none !important; } 
+  body { top: 0 !important; } /* Prevent page shift due to translate banner */
+</style>
+
+  </body>
+</html>
