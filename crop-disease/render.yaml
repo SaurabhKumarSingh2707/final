@@ -1,0 +1,11 @@
+# Render deployment configuration
+# This file tells Render how to deploy your Flask app
+
+# Web service configuration
+# Environment: Python 3
+# Build Command: bash build.sh
+# Start Command: gunicorn app_advanced:app
+
+# Environment Variables (set these in Render dashboard):
+# PYTHON_VERSION=3.11
+# FLASK_ENV=production
