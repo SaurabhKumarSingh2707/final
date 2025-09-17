@@ -1,5 +1,5 @@
 # Model Files
-model_phase1.h5
+# model_phase1.h5  # Commented out to allow tracking
 *.pyc
 __pycache__/
 *.tmp
