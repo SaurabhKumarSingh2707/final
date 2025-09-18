@@ -1,376 +1,409 @@
-document.addEventListener('DOMContentLoaded', function() {
-  const feedbackForm = document.getElementById('feedbackForm');
-  const thankYouMessage = document.getElementById('thankYouMessage');
-  const feedbackTitle = document.querySelector('.feedback-title');
-  const allFeedbacksSection = document.getElementById('allFeedbacks');
-  const viewFeedbacksBtn = document.getElementById('viewFeedbacks');
-  const feedbacksList = document.getElementById('feedbacksList');
-  const feedbackTextarea = document.getElementById('feedback');
-  const charCountElement = document.getElementById('charCount');
+// Contact Form JavaScript with Firebase Integration
 
-  // Initialize storage if it doesn't exist
-  if (!window.localStorage || !localStorage.getItem('agritechFeedbacks')) {
-    if (window.localStorage) {
-      localStorage.setItem('agritechFeedbacks', JSON.stringify([]));
+// Firebase Configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBzgNpV6aFyjtDX6Ig9rgP8x2w647jWN5M",
+  authDomain: "smart-crop-advisory-f3913.firebaseapp.com",
+  databaseURL: "https://smart-crop-advisory-f3913-default-rtdb.firebaseio.com",
+  projectId: "smart-crop-advisory-f3913",
+  storageBucket: "smart-crop-advisory-f3913.firebasestorage.app",
+  messagingSenderId: "231721730375",
+  appId: "1:231721730375:web:a07c0b372e8b99ed27cc62"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Get a reference to the database service
+const database = firebase.database();
+const messagesRef = database.ref('contactMessages');
+
+// Theme toggle functionality
+function toggleTheme() {
+    const body = document.body;
+    const themeIcon = document.querySelector('.theme-icon');
+    const themeText = document.querySelector('.theme-text');
+    
+    if (body.classList.contains('dark-theme')) {
+        body.classList.remove('dark-theme');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
+        themeText.textContent = 'Light';
+        window.currentTheme = 'light';
     } else {
-      if (window.sessionStorage) {
-        sessionStorage.setItem('agritechFeedbacks', JSON.stringify([]));
-      } else {
-        window.agritechFeedbacks = [];
-      }
+        body.classList.add('dark-theme');
+        themeIcon.classList.replace('fa-sun', 'fa-moon');
+        themeText.textContent = 'Dark';
+        window.currentTheme = 'dark';
     }
-  }
+}
 
-  // Character count functionality
-  if (feedbackTextarea && charCountElement) {
-    feedbackTextarea.addEventListener('input', function() {
-      const charCount = this.value.length;
-      charCountElement.textContent = charCount;
-      
-      if (charCount > 500) {
-        charCountElement.style.color = '#f44336';
-      } else if (charCount > 300) {
-        charCountElement.style.color = '#ff9800';
-      } else {
-        charCountElement.style.color = '#999';
-      }
-    });
-  }
-
-  // Animate loading elements
-  const inputs = document.querySelectorAll('input, textarea');
-  inputs.forEach(input => {
-    input.addEventListener('focus', function() {
-      this.parentElement.classList.add('focused');
-    });
+// Load theme on page load
+function loadTheme() {
+    const themeIcon = document.querySelector('.theme-icon');
+    const themeText = document.querySelector('.theme-text');
     
-    input.addEventListener('blur', function() {
-      if (this.value === '') {
-        this.parentElement.classList.remove('focused');
-      }
-    });
+    if (window.currentTheme === 'dark') {
+        document.body.classList.add('dark-theme');
+        themeIcon.classList.replace('fa-sun', 'fa-moon');
+        themeText.textContent = 'Dark';
+    }
+}
 
-    // Add input validation styling
-    input.addEventListener('input', function() {
-      if (this.checkValidity()) {
-        this.classList.remove('invalid');
-        this.classList.add('valid');
-      } else {
-        this.classList.remove('valid');
-        this.classList.add('invalid');
-      }
-    });
-  });
+// Wait for DOM and Firebase to be ready
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, initializing form...');
+    
+    // Load theme
+    loadTheme();
+    
+    // Get form elements
+    const feedbackForm = document.getElementById('feedbackForm');
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    const allFeedbacksSection = document.getElementById('allFeedbacks');
+    const feedbacksList = document.getElementById('feedbacksList');
+    const feedbackTextarea = document.getElementById('feedback');
+    const charCountElement = document.getElementById('charCount');
 
-  // Button ripple effect
-  const buttons = document.querySelectorAll('.submit-button');
-  buttons.forEach(button => {
-    button.addEventListener('click', function(e) {
-      const ripple = this.querySelector('.button-ripple');
-      if (ripple) {
-        const rect = this.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = e.clientX - rect.left - size / 2;
-        const y = e.clientY - rect.top - size / 2;
+    // Character count functionality
+    if (feedbackTextarea && charCountElement) {
+        feedbackTextarea.addEventListener('input', function() {
+            const charCount = this.value.length;
+            charCountElement.textContent = charCount;
+            
+            if (charCount > 500) {
+                charCountElement.style.color = '#ff7043';
+            } else if (charCount > 300) {
+                charCountElement.style.color = '#ff9800';
+            } else {
+                charCountElement.style.color = '#81c784';
+            }
+        });
+    }
+
+    // Phone number formatting
+    const phoneInput = document.getElementById('phone');
+    if (phoneInput) {
+        phoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                if (value.length <= 10) {
+                    value = value.replace(/(\d{5})(\d{5})/, '$1 $2');
+                } else if (value.length <= 12) {
+                    value = '+' + value.substring(0, 2) + ' ' + value.substring(2, 7) + ' ' + value.substring(7);
+                }
+            }
+            e.target.value = value;
+        });
+    }
+
+    // Form submission handler
+    if (feedbackForm) {
+        console.log('Form found, adding event listener...');
         
-        ripple.style.width = ripple.style.height = size + 'px';
-        ripple.style.left = x + 'px';
-        ripple.style.top = y + 'px';
-        
-        ripple.style.animation = 'none';
-        ripple.offsetHeight;
-        ripple.style.animation = 'ripple 0.6s linear';
-      }
-    });
-  });
+        feedbackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted, processing...');
+            
+            // Get form values using getInputVal function
+            const name = getInputVal('name');
+            const email = getInputVal('email');
+            const phone = getInputVal('phone');
+            const feedback = getInputVal('feedback');
+            
+            console.log('Form data:', { name, email, phone, feedback });
+            
+            // Validate required fields
+            if (!name || !email || !feedback) {
+                Swal.fire({
+                    title: 'Missing Required Information',
+                    text: 'Please fill in all required fields (Name, Email, and Message).',
+                    icon: 'warning',
+                    confirmButtonColor: '#4caf50'
+                });
+                return;
+            }
+            
+            // Validate email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                Swal.fire({
+                    title: 'Invalid Email',
+                    text: 'Please enter a valid email address.',
+                    icon: 'warning',
+                    confirmButtonColor: '#4caf50'
+                });
+                return;
+            }
+            
+            const submitButton = this.querySelector('.submit-button');
+            const originalText = submitButton.innerHTML;
+            
+            // Show loading state
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting...</span>';
+            submitButton.disabled = true;
+            
+            // Save message to Firebase
+            saveMessage(name, email, phone, feedback);
+        });
+    } else {
+        console.error('Form not found!');
+    }
+});
 
-  // Feedback form submission
-  feedbackForm.addEventListener('submit', function(e) {
-    e.preventDefault();
+// Function to get form input values
+function getInputVal(id) {
+    const element = document.getElementById(id);
+    return element ? element.value.trim() : '';
+}
+
+// Save message to Firebase
+function saveMessage(name, email, phone, message) {
+    console.log('Saving to Firebase:', { name, email, phone, message });
     
-    const submitButton = this.querySelector('.submit-button');
-    const originalText = submitButton.innerHTML;
+    // Create new message reference
+    const newMessageRef = messagesRef.push();
     
-    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting...</span>';
-    submitButton.disabled = true;
+    // Data to save
+    const messageData = {
+        name: name,
+        email: email,
+        phone: phone || null,
+        message: message,
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+        dateCreated: new Date().toISOString(),
+        dateFormatted: new Date().toLocaleString()
+    };
     
-    setTimeout(() => {
-      const feedbackData = {
-        name: document.getElementById('name').value.trim(),
-        email: document.getElementById('email').value.trim() || 'Not provided',
-        feedback: document.getElementById('feedback').value.trim(),
-        date: new Date().toLocaleString(),
-        id: Date.now() 
-      };
+    console.log('Message data to save:', messageData);
+    
+    // Save to Firebase
+    newMessageRef.set(messageData)
+        .then(() => {
+            console.log('Message saved successfully to Firebase!');
+            
+            // Reset form
+            document.getElementById('feedbackForm').reset();
+            
+            // Reset character count
+            const charCountElement = document.getElementById('charCount');
+            if (charCountElement) {
+                charCountElement.textContent = '0';
+                charCountElement.style.color = '#81c784';
+            }
+            
+            // Reset submit button
+            const submitButton = document.querySelector('.submit-button');
+            submitButton.innerHTML = '<i class="fas fa-paper-plane"></i><span>Send Message</span>';
+            submitButton.disabled = false;
+            
+            // Show success message
+            Swal.fire({
+                title: '✅ Sent!',
+                text: 'We\'ll get back to you soon',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                toast: true,
+                position: 'top-end',
+                background: '#f8fafc',
+                color: '#0f172a',
+                customClass: {
+                    popup: 'minimal-toast',
+                    timerProgressBar: 'minimal-progress'
+                }
+            }).then(() => {
+                // Show thank you section
+                const feedbackForm = document.getElementById('feedbackForm');
+                const thankYouMessage = document.getElementById('thankYouMessage');
+                const feedbackHeader = document.querySelector('.feedback-header');
+                
+                if (feedbackForm && thankYouMessage) {
+                    feedbackForm.classList.add('hidden');
+                    if (feedbackHeader) feedbackHeader.classList.add('hidden');
+                    thankYouMessage.classList.remove('hidden');
+                }
+            });
+        })
+        .catch((error) => {
+            console.error('Error saving message to Firebase:', error);
+            
+            // Reset submit button
+            const submitButton = document.querySelector('.submit-button');
+            submitButton.innerHTML = '<i class="fas fa-paper-plane"></i><span>Send Message</span>';
+            submitButton.disabled = false;
+            
+            // Show error message
+            Swal.fire({
+                title: '❌ Failed to send',
+                text: 'Please try again',
+                showConfirmButton: false,
+                timer: 2500,
+                toast: true,
+                position: 'top-end',
+                background: '#fef2f2',
+                color: '#991b1b',
+                customClass: {
+                    popup: 'minimal-toast-error'
+                }
+            });
+        });
+}
 
-      // Save to storage (localStorage, sessionStorage, or memory)
-      let allFeedbacks = [];
-      
-      try {
-        if (window.localStorage && localStorage.getItem('agritechFeedbacks')) {
-          allFeedbacks = JSON.parse(localStorage.getItem('agritechFeedbacks'));
-          allFeedbacks.push(feedbackData);
-          localStorage.setItem('agritechFeedbacks', JSON.stringify(allFeedbacks));
-        } else if (window.sessionStorage && sessionStorage.getItem('agritechFeedbacks')) {
-          allFeedbacks = JSON.parse(sessionStorage.getItem('agritechFeedbacks'));
-          allFeedbacks.push(feedbackData);
-          sessionStorage.setItem('agritechFeedbacks', JSON.stringify(allFeedbacks));
-        } else {
-          window.agritechFeedbacks = window.agritechFeedbacks || [];
-          window.agritechFeedbacks.push(feedbackData);
-        }
-      } catch (error) {
-        console.warn('Storage not available, using in-memory storage');
-        window.agritechFeedbacks = window.agritechFeedbacks || [];
-        window.agritechFeedbacks.push(feedbackData);
-      }
+// Load messages from Firebase
+function loadMessagesFromFirebase() {
+    console.log('Loading messages from Firebase...');
+    
+    return messagesRef.orderByChild('timestamp').once('value')
+        .then((snapshot) => {
+            console.log('Firebase response received');
+            const messages = [];
+            
+            snapshot.forEach((childSnapshot) => {
+                const message = childSnapshot.val();
+                message.id = childSnapshot.key;
+                messages.unshift(message); // Add to beginning for newest first
+            });
+            
+            console.log('Loaded messages:', messages);
+            return messages;
+        })
+        .catch((error) => {
+            console.error('Error loading messages:', error);
+            throw error;
+        });
+}
 
-      feedbackForm.classList.add('hidden');
-      document.querySelector('.feedback-header').classList.add('hidden');
-      thankYouMessage.classList.remove('hidden');
-      feedbackForm.reset();
-      
-      if (charCountElement) {
-        charCountElement.textContent = '0';
-        charCountElement.style.color = '#999';
-      }
-      
-      submitButton.innerHTML = originalText;
-      submitButton.disabled = false;
-      
-      inputs.forEach(input => {
-        input.classList.remove('valid', 'invalid');
-        input.parentElement.classList.remove('focused');
-      });
-      
-    }, 1500); 
-  });
+// Helper function to get field labels
+function getFieldLabel(fieldName) {
+    const labels = {
+        name: 'Full Name',
+        email: 'Email Address',
+        phone: 'Phone Number',
+        feedback: 'Message Details'
+    };
+    return labels[fieldName] || fieldName;
+}
 
-  viewFeedbacksBtn.addEventListener('click', function() {
+// Show all contact messages
+function showAllFeedbacks() {
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    const allFeedbacksSection = document.getElementById('allFeedbacks');
+    const feedbacksList = document.getElementById('feedbacksList');
+    
     thankYouMessage.classList.add('hidden');
-    displayAllFeedbacks();
-  });
-
-  // Enhanced email validation
-  const emailInput = document.getElementById('email');
-  if (emailInput) {
-    emailInput.addEventListener('blur', function() {
-      if (this.value && !validateEmail(this.value)) {
-        this.classList.add('invalid');
-        showTooltip(this, 'Please enter a valid email address');
-      } else {
-        this.classList.remove('invalid');
-        hideTooltip(this);
-      }
-    });
-    
-    emailInput.addEventListener('input', function() {
-      if (this.value === '' || validateEmail(this.value)) {
-        this.classList.remove('invalid');
-        hideTooltip(this);
-      }
-    });
-  }
-
-  // Enhanced display all feedbacks function
-  function displayAllFeedbacks() {
-    let allFeedbacks = [];
-    
-    try {
-      if (window.localStorage && localStorage.getItem('agritechFeedbacks')) {
-        allFeedbacks = JSON.parse(localStorage.getItem('agritechFeedbacks'));
-      } else if (window.sessionStorage && sessionStorage.getItem('agritechFeedbacks')) {
-        allFeedbacks = JSON.parse(sessionStorage.getItem('agritechFeedbacks'));
-      } else {
-        allFeedbacks = window.agritechFeedbacks || [];
-      }
-    } catch (error) {
-      allFeedbacks = window.agritechFeedbacks || [];
-    }
-    
     allFeedbacksSection.classList.remove('hidden');
     
-    if (allFeedbacks.length === 0) {
-      feedbacksList.innerHTML = `
+    // Show loading
+    feedbacksList.innerHTML = `
         <div class="no-feedback">
-          <i class="fas fa-inbox" style="font-size: 3rem; color: #ccc; margin-bottom: 20px;"></i>
-          <p style="color: #999; font-size: 1.1rem;">No feedback submissions yet.</p>
-          <p style="color: #666; font-size: 0.9rem;">Be the first to share your thoughts!</p>
+            <i class="fas fa-spinner fa-spin" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.6;"></i>
+            <p style="font-size: 1rem; margin-bottom: 0.5rem;">Loading messages...</p>
         </div>
-      `;
-      return;
+    `;
+    
+    // Load messages from Firebase
+    loadMessagesFromFirebase()
+        .then((allFeedbacks) => {
+            if (allFeedbacks.length === 0) {
+                feedbacksList.innerHTML = `
+                    <div class="no-feedback">
+                        <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.6;"></i>
+                        <p style="font-size: 1rem; margin-bottom: 0.5rem;">No contact messages yet</p>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Be the first to get in touch!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            feedbacksList.innerHTML = allFeedbacks.map((fb, index) => `
+                <div class="feedback-item">
+                    <h4><i class="fas fa-user-circle" style="color: #4caf50; margin-right: 8px;"></i>${escapeHtml(fb.name || 'Anonymous')}</h4>
+                    
+                    <div style="margin: 10px 0; font-size: 0.9rem; color: #94a3b8;">
+                        <div style="margin-bottom: 5px;"><i class="fas fa-envelope" style="margin-right: 8px; color: #66bb6a;"></i>${escapeHtml(fb.email || 'Not provided')}</div>
+                        ${fb.phone ? `<div><i class="fas fa-phone" style="margin-right: 8px; color: #66bb6a;"></i>${escapeHtml(fb.phone)}</div>` : ''}
+                    </div>
+                    
+                    <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.2);"><i class="fas fa-quote-left" style="color: #66bb6a; margin-right: 8px; opacity: 0.6;"></i>${escapeHtml(fb.message || 'No message provided')}</p>
+                    
+                    <div class="feedback-meta">
+                        📝 Message #${index + 1} • ${formatDate(fb.dateFormatted || fb.date)}
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch((error) => {
+            console.error('Error loading messages:', error);
+            feedbacksList.innerHTML = `
+                <div class="no-feedback">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.6; color: #ff7043;"></i>
+                    <p style="font-size: 1rem; margin-bottom: 0.5rem;">Error loading messages</p>
+                    <p style="font-size: 0.9rem; opacity: 0.8;">Please try again later.</p>
+                </div>
+            `;
+        });
+}
+
+// Show new contact form
+function showNewFeedbackForm() {
+    const feedbackForm = document.getElementById('feedbackForm');
+    const thankYouMessage = document.getElementById('thankYouMessage');
+    const allFeedbacksSection = document.getElementById('allFeedbacks');
+    const feedbackHeader = document.querySelector('.feedback-header');
+    
+    // Hide all sections
+    thankYouMessage.classList.add('hidden');
+    allFeedbacksSection.classList.add('hidden');
+    
+    // Show form
+    feedbackForm.classList.remove('hidden');
+    feedbackHeader.classList.remove('hidden');
+    
+    // Reset form
+    feedbackForm.reset();
+    const charCountElement = document.getElementById('charCount');
+    if (charCountElement) {
+        charCountElement.textContent = '0';
+        charCountElement.style.color = '#81c784';
     }
+}
 
-    // Sort feedbacks by date (newest first)
-    allFeedbacks.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-    feedbacksList.innerHTML = allFeedbacks.map((fb, index) => `
-      <div class="feedback-item" style="animation-delay: ${index * 0.1}s">
-        <div class="feedback-header-item">
-          <h4><i class="fas fa-user-circle" style="color: #4caf50; margin-right: 8px;"></i>${escapeHtml(fb.name)}</h4>
-          ${fb.email !== 'Not provided' ? `<p style="color: #666; font-size: 0.9rem; margin: 5px 0;"><i class="fas fa-envelope" style="color: #4caf50; margin-right: 8px;"></i>${escapeHtml(fb.email)}</p>` : ''}
-        </div>
-        <div class="feedback-content">
-          <p><i class="fas fa-quote-left" style="color: #4caf50; margin-right: 8px;"></i>${escapeHtml(fb.feedback)}</p>
-        </div>
-        <div class="feedback-meta">
-          <span>Submission #${allFeedbacks.length - index}</span>
-          <span>•</span>
-          <span>${formatDate(fb.date)}</span>
-        </div>
-      </div>
-    `).join('');
-
-    const items = feedbacksList.querySelectorAll('.feedback-item');
-    items.forEach((item, index) => {
-      setTimeout(() => {
-        item.style.opacity = '1';
-        item.style.transform = 'translateY(0)';
-      }, index * 100);
-    });
-  }
-
-  // Utility functions
-  function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  }
-
-  function escapeHtml(text) {
+// Utility functions
+function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
-  }
+}
 
-  function formatDate(dateString) {
+function formatDate(dateString) {
     const date = new Date(dateString);
     const now = new Date();
     const diffTime = Math.abs(now - date);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
-    if (diffDays === 1) {
-      return 'Today';
-    } else if (diffDays === 2) {
-      return 'Yesterday';
-    } else if (diffDays <= 7) {
-      return `${diffDays - 1} days ago`;
-    } else {
-      return date.toLocaleDateString();
-    }
-  }
+    if (diffDays === 1) return 'Today';
+    if (diffDays === 2) return 'Yesterday';
+    if (diffDays <= 7) return `${diffDays - 1} days ago`;
+    return date.toLocaleDateString();
+}
 
-  function showTooltip(element, message) {
-    hideTooltip(element); 
-    
-    const tooltip = document.createElement('div');
-    tooltip.className = 'validation-tooltip';
-    tooltip.textContent = message;
-    tooltip.style.cssText = `
-      position: absolute;
-      background: #f44336;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      white-space: nowrap;
-      z-index: 1000;
-      opacity: 0;
-      transform: translateY(-5px);
-      transition: all 0.3s ease;
-      pointer-events: none;
-    `;
-    
-    element.parentElement.style.position = 'relative';
-    element.parentElement.appendChild(tooltip);
-    
-    // Position tooltip
-    const rect = element.getBoundingClientRect();
-    tooltip.style.top = '-35px';
-    tooltip.style.left = '0';
-    
-    // Add arrow
-    const arrow = document.createElement('div');
-    arrow.style.cssText = `
-      position: absolute;
-      top: 100%;
-      left: 20px;
-      border: 6px solid transparent;
-      border-top-color: #f44336;
-    `;
-    tooltip.appendChild(arrow);
-    
-    // Animate in
-    setTimeout(() => {
-      tooltip.style.opacity = '1';
-      tooltip.style.transform = 'translateY(0)';
-    }, 10);
-  }
-
-  function hideTooltip(element) {
-    const existingTooltip = element.parentElement.querySelector('.validation-tooltip');
-    if (existingTooltip) {
-      existingTooltip.style.opacity = '0';
-      existingTooltip.style.transform = 'translateY(-5px)';
-      setTimeout(() => {
-        existingTooltip.remove();
-      }, 300);
-    }
-  }
-
-  // Add smooth scrolling for better UX
-  function smoothScrollTo(element) {
-    element.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start'
-    });
-  }
-
-  // Add keyboard navigation support
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-      if (!allFeedbacksSection.classList.contains('hidden')) {
-        allFeedbacksSection.classList.add('hidden');
-        thankYouMessage.classList.remove('hidden');
-      } else if (!thankYouMessage.classList.contains('hidden')) {
-        thankYouMessage.classList.add('hidden');
-        feedbackForm.classList.remove('hidden');
-        document.querySelector('.feedback-header').classList.remove('hidden');
-      }
-    }
-  });
-
-  // Initialize character count on page load
-  if (feedbackTextarea && charCountElement) {
-    charCountElement.textContent = feedbackTextarea.value.length;
-  }
-
-  // Add focus trap for better accessibility
-  function trapFocus(element) {
-    const focusableElements = element.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    const firstElement = focusableElements[0];
-    const lastElement = focusableElements[focusableElements.length - 1];
-
-    element.addEventListener('keydown', function(e) {
-      if (e.key === 'Tab') {
-        if (e.shiftKey) {
-          if (document.activeElement === firstElement) {
-            lastElement.focus();
-            e.preventDefault();
-          }
-        } else {
-          if (document.activeElement === lastElement) {
-            firstElement.focus();
-            e.preventDefault();
-          }
+// Logout confirmation
+function showLogoutConfirmation() {
+    Swal.fire({
+        title: 'Confirm Logout',
+        text: 'Are you sure you want to logout?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ff7043',
+        cancelButtonColor: '#4caf50',
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'Cancel',
+        customClass: {
+            popup: 'swal-custom'
         }
-      }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = 'index.html';  
+        }
     });
-  }
-
-  // Apply focus trap to main container
-  trapFocus(document.querySelector('.feedback-container'));
-
-  console.log('Enhanced AgriTech Feedback System loaded successfully!');
-});
+}

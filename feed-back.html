@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <title>KrishiVaani - Share Your Feedback</title>
+    <title>KrishiVaani - Contact Us</title>
     <link rel="icon" type="image/png" href="images/logo.png">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -283,6 +283,32 @@
             animation: slideInUp 0.6s ease-out;
         }
 
+        .form-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: rgba(51, 65, 85, 0.3);
+            border-radius: 20px;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            position: relative;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(148, 163, 184, 0.2);
+            color: #f8fafc;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .section-title i {
+            color: #66bb6a;
+            font-size: 1.4rem;
+        }
+
         .form-row {
             margin-bottom: 2rem;
         }
@@ -324,7 +350,8 @@
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
             padding: 1.25rem 1.5rem;
             border: 2px solid rgba(148, 163, 184, 0.3);
@@ -338,6 +365,24 @@
             font-weight: 500;
         }
 
+        .form-group select {
+            cursor: pointer;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f8fafc' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1.5rem center;
+            background-size: 1rem;
+            padding-right: 3rem;
+        }
+
+        .form-group select option {
+            background: rgba(30, 41, 59, 0.95);
+            color: #f8fafc;
+            padding: 1rem;
+        }
+
         .form-group input::placeholder,
         .form-group textarea::placeholder {
             color: #94a3b8;
@@ -346,7 +391,8 @@
         }
 
         .form-group input:focus,
-        .form-group textarea:focus {
+        .form-group textarea:focus,
+        .form-group select:focus {
             border-color: #3b82f6;
             outline: none;
             background: rgba(30, 41, 59, 0.9);
@@ -815,50 +861,76 @@
             <div class="feedback-container">
                 <div class="feedback-header">
                     <div class="feedback-icon">
-                        <i class="fas fa-comment-dots"></i>
+                        <i class="fas fa-address-book"></i>
                     </div>
-                    <h2 class="feedback-title">Share Your Experience</h2>
-                    <p class="feedback-subtitle">Your insights help us grow and serve you better</p>
+                    <h2 class="feedback-title">Contact Us</h2>
+                    <p class="feedback-subtitle">Get in touch with us - we're here to help and answer your questions</p>
                 </div>
 
                 <form id="feedbackForm" class="feedback-form">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="name">
-                                <i class="fas fa-user input-icon"></i>
-                                Name <span class="required">*</span>
-                            </label>
-                            <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                    <!-- Personal Information Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-user-circle"></i>
+                            Personal Information
+                        </h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">
+                                    <i class="fas fa-user input-icon"></i>
+                                    Full Name <span class="required">*</span>
+                                </label>
+                                <input type="text" id="name" name="name" required placeholder="Enter your full name">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">
+                                    <i class="fas fa-envelope input-icon"></i>
+                                    Email Address <span class="required">*</span>
+                                </label>
+                                <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phone">
+                                    <i class="fas fa-phone input-icon"></i>
+                                    Phone Number <span class="optional">(optional)</span>
+                                </label>
+                                <input type="tel" id="phone" name="phone" placeholder="+91 9876543210" pattern="[+]?[0-9\s\-()]+">
+                            </div>
                         </div>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="email">
-                                <i class="fas fa-envelope input-icon"></i>
-                                Email <span class="optional">(optional)</span>
-                            </label>
-                            <input type="email" id="email" name="email" placeholder="your.email@example.com">
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="feedback">
-                                <i class="fas fa-message input-icon"></i>
-                                Your Feedback <span class="required">*</span>
-                            </label>
-                            <textarea id="feedback" name="feedback" rows="5" required
-                                placeholder="Share your thoughts, suggestions, or any experiences you'd like us to know about..."></textarea>
-                            <div class="character-count">
-                                <span id="charCount">0</span> characters
+                    <!-- Message Section -->
+                    <div class="form-section">
+                        <h3 class="section-title">
+                            <i class="fas fa-message"></i>
+                            Your Message
+                        </h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="feedback">
+                                    <i class="fas fa-comment-dots input-icon"></i>
+                                    Message Details <span class="required">*</span>
+                                </label>
+                                <textarea id="feedback" name="feedback" rows="6" required
+                                    placeholder="Share your thoughts, suggestions, questions, or any feedback you'd like us to know about..."></textarea>
+                                <div class="character-count">
+                                    <span id="charCount">0</span> characters
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <button type="submit" class="submit-button">
                         <i class="fas fa-paper-plane"></i>
-                        <span>Share Feedback</span>
+                        <span>Send Contact Message</span>
                     </button>
                 </form>
 
@@ -866,8 +938,8 @@
                     <div class="success-animation">
                         <i class="fas fa-check-circle success-icon"></i>
                     </div>
-                    <h3>Thank You for Your Feedback!</h3>
-                    <p>We truly appreciate you taking the time to share your thoughts with us. Your feedback helps us create better agricultural solutions for everyone.</p>
+                    <h3>Thank You for Contacting Us!</h3>
+                    <p>We've received your message and will get back to you soon. Our team is here to help with any questions or support you need.</p>
                     <div class="action-buttons">
                         <a href="dashboard.html" class="home-button">
                             <i class="fas fa-home"></i>
@@ -875,7 +947,7 @@
                         </a>
                         <button id="viewFeedbacks" class="view-button" onclick="showAllFeedbacks()">
                             <i class="fas fa-list"></i>
-                            View All Feedback
+                            View All Messages
                         </button>
                     </div>
                 </div>
@@ -883,7 +955,7 @@
                 <div id="allFeedbacks" class="hidden feedback-list-section">
                     <div class="section-header">
                         <i class="fas fa-history"></i>
-                        <h3>All Feedback Submissions</h3>
+                        <h3>All Contact Messages</h3>
                     </div>
                     <div id="feedbacksList" class="feedbacks-container"></div>
                     <div class="action-buttons" style="margin-top: 2rem;">
@@ -893,7 +965,7 @@
                         </a>
                         <button class="view-button" onclick="showNewFeedbackForm()">
                             <i class="fas fa-plus"></i>
-                            New Feedback
+                            New Message
                         </button>
                     </div>
                 </div>
@@ -907,7 +979,7 @@
 
             </button>
             <div class="help-tooltip">
-                Need help with feedback? Contact our support team!
+                Need help? Our support team is here to assist you!
             </div>
         </div>
 
@@ -993,18 +1065,81 @@
                 });
             }
 
+            // Phone number formatting
+            const phoneInput = document.getElementById('phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length > 0) {
+                        if (value.length <= 10) {
+                            value = value.replace(/(\d{5})(\d{5})/, '$1 $2');
+                        } else if (value.length <= 12) {
+                            value = '+' + value.substring(0, 2) + ' ' + value.substring(2, 7) + ' ' + value.substring(7);
+                        }
+                    }
+                    e.target.value = value;
+                });
+            }
+
+            // PIN code validation
+            const pincodeInput = document.getElementById('pincode');
+            if (pincodeInput) {
+                pincodeInput.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '').substring(0, 6);
+                });
+            }
+
             // Form submission
             feedbackForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const name = document.getElementById('name').value.trim();
-                const email = document.getElementById('email').value.trim();
-                const feedbackText = document.getElementById('feedback').value.trim();
+                // Get form data
+                const formData = {
+                    name: document.getElementById('name').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    feedback: document.getElementById('feedback').value.trim()
+                };
                 
-                if (!name || !feedbackText) {
+                // Validate required fields
+                const requiredFields = ['name', 'email', 'feedback'];
+                const missingFields = [];
+                
+                requiredFields.forEach(field => {
+                    if (!formData[field]) {
+                        missingFields.push(field);
+                    }
+                });
+                
+                if (missingFields.length > 0) {
                     Swal.fire({
-                        title: 'Missing Information',
-                        text: 'Please fill in all required fields.',
+                        title: 'Missing Required Information',
+                        html: `Please fill in the following required fields:<br><br><ul style="text-align: left; margin: 0 auto; display: inline-block;">
+                            ${missingFields.map(field => `<li><strong>${getFieldLabel(field)}</strong></li>`).join('')}
+                        </ul>`,
+                        icon: 'warning',
+                        confirmButtonColor: '#4caf50'
+                    });
+                    return;
+                }
+                
+                // Validate email format
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(formData.email)) {
+                    Swal.fire({
+                        title: 'Invalid Email',
+                        text: 'Please enter a valid email address.',
+                        icon: 'warning',
+                        confirmButtonColor: '#4caf50'
+                    });
+                    return;
+                }
+                
+                // Validate phone number if provided
+                if (formData.phone && !/^[\+]?[\d\s\-\(\)]{10,15}$/.test(formData.phone)) {
+                    Swal.fire({
+                        title: 'Invalid Phone Number',
+                        text: 'Please enter a valid phone number (10-15 digits).',
                         icon: 'warning',
                         confirmButtonColor: '#4caf50'
                     });
@@ -1014,23 +1149,21 @@
                 const submitButton = this.querySelector('.submit-button');
                 const originalText = submitButton.innerHTML;
                 
-                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Sending...</span>';
+                submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Submitting...</span>';
                 submitButton.disabled = true;
                 
                 setTimeout(() => {
-                    const feedbackData = {
-                        name: name,
-                        email: email || 'Not provided',
-                        feedback: feedbackText,
+                    const contactData = {
+                        ...formData,
                         date: new Date().toLocaleString(),
-                        id: Date.now() 
+                        id: Date.now()
                     };
 
-                    // Save feedback in memory (using a global variable since localStorage is not available)
+                    // Save contact data in memory
                     if (!window.agritechFeedbacks) {
                         window.agritechFeedbacks = [];
                     }
-                    window.agritechFeedbacks.push(feedbackData);
+                    window.agritechFeedbacks.push(contactData);
 
                     // Show success
                     feedbackForm.classList.add('hidden');
@@ -1045,9 +1178,20 @@
                     
                     submitButton.innerHTML = originalText;
                     submitButton.disabled = false;
-                }, 1500);
+                }, 2000);
             });
         });
+
+        // Helper function to get field labels
+        function getFieldLabel(fieldName) {
+            const labels = {
+                name: 'Full Name',
+                email: 'Email Address',
+                phone: 'Phone Number',
+                feedback: 'Message Details'
+            };
+            return labels[fieldName] || fieldName;
+        }
 
         function showAllFeedbacks() {
             const thankYouMessage = document.getElementById('thankYouMessage');
@@ -1063,8 +1207,8 @@
                 feedbacksList.innerHTML = `
                     <div class="no-feedback">
                         <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.6;"></i>
-                        <p style="font-size: 1rem; margin-bottom: 0.5rem;">No feedback submissions yet</p>
-                        <p style="font-size: 0.9rem; opacity: 0.8;">Be the first to share your thoughts!</p>
+                        <p style="font-size: 1rem; margin-bottom: 0.5rem;">No contact messages yet</p>
+                        <p style="font-size: 0.9rem; opacity: 0.8;">Be the first to get in touch!</p>
                     </div>
                 `;
                 return;
@@ -1074,11 +1218,17 @@
 
             feedbacksList.innerHTML = allFeedbacks.map((fb, index) => `
                 <div class="feedback-item">
-                    <h4><i class="fas fa-user-circle" style="color: #4caf50; margin-right: 8px;"></i>${escapeHtml(fb.name)}</h4>
-                    ${fb.email !== 'Not provided' ? `<p style="color: #81c784; font-size: 0.9rem; margin: 5px 0;"><i class="fas fa-envelope" style="margin-right: 8px;"></i>${escapeHtml(fb.email)}</p>` : ''}
-                    <p style="margin-top: 1rem;"><i class="fas fa-quote-left" style="color: #66bb6a; margin-right: 8px; opacity: 0.6;"></i>${escapeHtml(fb.feedback)}</p>
+                    <h4><i class="fas fa-user-circle" style="color: #4caf50; margin-right: 8px;"></i>${escapeHtml(fb.name || 'Anonymous')}</h4>
+                    
+                    <div style="margin: 10px 0; font-size: 0.9rem; color: #94a3b8;">
+                        <div style="margin-bottom: 5px;"><i class="fas fa-envelope" style="margin-right: 8px; color: #66bb6a;"></i>${escapeHtml(fb.email || 'Not provided')}</div>
+                        ${fb.phone ? `<div><i class="fas fa-phone" style="margin-right: 8px; color: #66bb6a;"></i>${escapeHtml(fb.phone)}</div>` : ''}
+                    </div>
+                    
+                    <p style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.2);"><i class="fas fa-quote-left" style="color: #66bb6a; margin-right: 8px; opacity: 0.6;"></i>${escapeHtml(fb.feedback || 'No message provided')}</p>
+                    
                     <div class="feedback-meta">
-                        📝 Submission #${allFeedbacks.length - index} • ${formatDate(fb.date)}
+                        📝 Message #${allFeedbacks.length - index} • ${formatDate(fb.date)}
                     </div>
                 </div>
             `).join('');
@@ -1100,6 +1250,16 @@
             if (diffDays === 2) return 'Yesterday';
             if (diffDays <= 7) return `${diffDays - 1} days ago`;
             return date.toLocaleDateString();
+        }
+
+        function getUrgencyColor(urgency) {
+            const colors = {
+                low: 'rgba(34, 197, 94, 0.2); color: #22c55e',
+                medium: 'rgba(245, 158, 11, 0.2); color: #f59e0b',
+                high: 'rgba(239, 68, 68, 0.2); color: #ef4444',
+                urgent: 'rgba(220, 38, 38, 0.3); color: #dc2626'
+            };
+            return colors[urgency] || colors.low;
         }
 
         function showNewFeedbackForm() {
@@ -1178,7 +1338,56 @@
 
   .goog-te-banner-frame.skiptranslate { display: none !important; } 
   body { top: 0 !important; } /* Prevent page shift due to translate banner */
+
+  /* Minimal Toast Notifications */
+  .minimal-toast {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(34, 197, 94, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    min-width: 280px !important;
+    padding: 16px !important;
+  }
+
+  .minimal-toast-error {
+    border-radius: 12px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid rgba(239, 68, 68, 0.2) !important;
+    backdrop-filter: blur(10px) !important;
+    font-weight: 500 !important;
+    font-size: 0.9rem !important;
+    min-width: 280px !important;
+    padding: 16px !important;
+  }
+
+  .minimal-progress {
+    background: linear-gradient(90deg, #22c55e, #16a34a) !important;
+    height: 3px !important;
+    border-radius: 2px !important;
+  }
+
+  /* Dark theme support for toasts */
+  .dark-theme .minimal-toast {
+    background: rgba(30, 41, 59, 0.95) !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(34, 197, 94, 0.3) !important;
+  }
+
+  .dark-theme .minimal-toast-error {
+    background: rgba(30, 41, 59, 0.95) !important;
+    color: #fecaca !important;
+    border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  }
 </style>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<!-- External JavaScript -->
+<script src="feed-back.js"></script>
 
 </body>
 </html>

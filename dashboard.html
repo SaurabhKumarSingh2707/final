@@ -1361,7 +1361,7 @@
         <li>
           <a href="Crop Yield Prediction/templates/index.html">📊 Yield Prediction</a>
         </li>
-        <li><a href="disease_prediction_direct.html">🔬 Advanced Disease Prediction</a></li>
+        <li><a href="#" onclick="openDiseasePredictor(event)">🔬 Disease Prediction</a></li>
         <li><a href="organic.html">🌿 Organic Farming</a></li>
         <li><a href="farmer.html">👥 Farmer Network</a></li>
         <li><a href="weather.html">⛅ Weather Check</a></li>
@@ -1425,16 +1425,16 @@
         </div>
       </a>
 
-      <a href="disease_prediction_direct.html" class="grid-item">
+      <a href="#" onclick="openDiseasePredictor(event)" class="grid-item">
         <img src="images/disease.avif" alt="Disease Prediction" loading="lazy" />
         <div class="grid-item-content">
-          <h3>Advanced Disease Prediction</h3>
+          <h3>AI Disease Prediction</h3>
           <p>
-            Detect plant diseases early with our advanced AI system featuring Test-Time Augmentation 
-            and enhanced accuracy for better crop protection.
+            Advanced AI-powered plant disease detection with instant diagnosis,
+            treatment recommendations, and prevention tips.
           </p>
           <div class="grid-item-footer">
-            <span class="feature-badge">AI Enhanced</span>
+            <span class="feature-badge">AI Powered</span>
             <span class="arrow-icon">→</span>
           </div>
         </div>
@@ -1500,7 +1500,7 @@
       </a>
 
       <a href="chat.html" class="grid-item">
-        <img src="images/Community.jpg" alt="Community Chat" loading="lazy" />
+        <img src="images/images (3).jpeg" alt="AI ChatBot" loading="lazy" />
         <div class="grid-item-content">
           <h3>AI ChatBot</h3>
           <p>
@@ -1630,8 +1630,8 @@
     <body>
       <div class="container">
         <header>
-          <h1>Smart Loan Guide for Farmers</h1>
-          <p>Select the type of loan you want to apply for:</p>
+          <h1 style="text-align: center;">Smart Loan Guide for Farmers</h1>
+       
         </header>
 
         <div class="loan-cards">
@@ -1845,7 +1845,6 @@
   <script src="theme.js"></script>
   <script src="logout-handler.js"></script>
   <script src="voice-assist.js"></script>
-  <script src="flask-auto-start.js"></script>
   <script src="location-handler.js"></script>
   <script type="module" src="user-display.js"></script>
 
@@ -2683,6 +2682,164 @@
         }
       }, 5000);
     });
+  </script>
+
+  <!-- Disease Prediction Integration Script -->
+  <script>
+    // Function to handle disease prediction tab click
+    async function openDiseasePredictor(event) {
+      event.preventDefault();
+      
+      // First check if Flask server is running
+      const isServerRunning = await checkDiseaseServerStatus();
+      
+      if (!isServerRunning) {
+        // Show SweetAlert with instructions to start the server
+        Swal.fire({
+          title: '🔬 Disease Prediction Service',
+          html: `
+            <div style="text-align: left; padding: 1rem;">
+              <p style="font-size: 16px; margin-bottom: 15px; text-align: center;">The disease prediction service needs to be started first.</p>
+              
+              <div style="background: #f0f9ff; padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                <h4 style="color: #0c4a6e; margin-bottom: 10px; text-align: center;">📋 Setup Instructions:</h4>
+                <ol style="color: #374151; margin: 0; padding-left: 20px; line-height: 1.6;">
+                  <li>Open Terminal/Command Prompt</li>
+                  <li>Navigate to: <code style="background: #e5e7eb; padding: 2px 4px; border-radius: 3px;">crop-disease-clean-main</code> folder</li>
+                  <li>Run: <code style="background: #e5e7eb; padding: 2px 4px; border-radius: 3px;">python app_advanced.py</code></li>
+                  <li>Wait for "Running on http://127.0.0.1:5000" message</li>
+                  <li>Click "Try Again" below</li>
+                </ol>
+              </div>
+              
+              <div style="background: #fef3c7; padding: 10px; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                <p style="margin: 0; font-size: 14px; color: #92400e;">
+                  <i class="fas fa-info-circle"></i> Make sure you have all required Python packages installed!
+                </p>
+              </div>
+            </div>
+          `,
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonText: '🔄 Try Again',
+          cancelButtonText: '📖 View Instructions',
+          confirmButtonColor: '#22c55e',
+          cancelButtonColor: '#6b7280',
+          customClass: {
+            popup: 'enhanced-slide-down'
+          }
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            // Try to check server status again
+            const retryServerStatus = await checkDiseaseServerStatus();
+            if (retryServerStatus) {
+              openDiseasePredictor(event);
+            } else {
+              Swal.fire({
+                title: 'Service Still Unavailable',
+                text: 'Please make sure the Flask server is running on port 5000.',
+                icon: 'warning',
+                confirmButtonColor: '#22c55e'
+              });
+            }
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // Show detailed instructions
+            showDetailedInstructions();
+          }
+        });
+        return;
+      }
+      
+      // If server is running, show loading and redirect
+      Swal.fire({
+        title: '🔬 Loading Disease Predictor',
+        html: `
+          <div class="loading-spinner"></div>
+          <p style="margin-top: 1rem;">Initializing AI disease detection system...</p>
+        `,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        showConfirmButton: false,
+        customClass: {
+          popup: 'enhanced-slide-down'
+        }
+      });
+      
+      // Small delay for better UX
+      setTimeout(() => {
+        Swal.close();
+        window.location.href = 'disease-prediction-integrated.html?autostart=true';
+      }, 1500);
+    }
+    
+    // Function to check if disease prediction server is running
+    async function checkDiseaseServerStatus() {
+      try {
+        const response = await fetch('http://127.0.0.1:5000/health', {
+          method: 'GET',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        return response.ok;
+      } catch (error) {
+        console.log('Disease prediction server not available:', error);
+        return false;
+      }
+    }
+    
+    // Function to show detailed setup instructions
+    function showDetailedInstructions() {
+      Swal.fire({
+        title: '📖 Detailed Setup Instructions',
+        html: `
+          <div style="text-align: left; padding: 1rem; max-height: 400px; overflow-y: auto;">
+            <h4 style="color: #22c55e; margin-bottom: 15px;">🚀 Getting Started with Disease Prediction</h4>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+              <h5 style="color: #495057; margin-bottom: 10px;">📁 1. Navigate to the correct folder:</h5>
+              <code style="background: #e9ecef; padding: 8px; display: block; border-radius: 4px; font-family: monospace;">
+                cd crop-disease-clean-main
+              </code>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+              <h5 style="color: #495057; margin-bottom: 10px;">📦 2. Install required packages (if not done already):</h5>
+              <code style="background: #e9ecef; padding: 8px; display: block; border-radius: 4px; font-family: monospace;">
+                pip install -r requirements.txt
+              </code>
+            </div>
+            
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+              <h5 style="color: #495057; margin-bottom: 10px;">🎯 3. Start the Flask server:</h5>
+              <code style="background: #e9ecef; padding: 8px; display: block; border-radius: 4px; font-family: monospace;">
+                python app_advanced.py
+              </code>
+            </div>
+            
+            <div style="background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
+              <h5 style="color: #155724; margin-bottom: 10px;">✅ 4. Look for this message:</h5>
+              <p style="margin: 0; font-family: monospace; background: #c3e6cb; padding: 8px; border-radius: 4px;">
+                Running on http://127.0.0.1:5000
+              </p>
+            </div>
+            
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107; margin-top: 15px;">
+              <p style="margin: 0; color: #856404;">
+                <i class="fas fa-lightbulb"></i> <strong>Tip:</strong> Keep the terminal/command prompt open while using the disease prediction feature!
+              </p>
+            </div>
+          </div>
+        `,
+        width: '600px',
+        confirmButtonText: '✅ Got it!',
+        confirmButtonColor: '#22c55e',
+        customClass: {
+          popup: 'enhanced-slide-down'
+        }
+      });
+    }
   </script>
 
 </body>

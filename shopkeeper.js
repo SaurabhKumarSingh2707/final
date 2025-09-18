@@ -279,9 +279,11 @@ class DealerFilter {
     const stateFilter = this.stateFilter.value;
     const districtFilter = this.districtFilter.value;
     
+    // Get fresh dealer cards (not cached) to include any dynamically added cards
+    const dealerCards = document.querySelectorAll('.dealer-card');
     let visibleCount = 0;
     
-    this.dealerCards.forEach(card => {
+    dealerCards.forEach(card => {
       const name = card.dataset.name.toLowerCase();
       const location = card.dataset.location.toLowerCase();
       const category = card.dataset.category;
@@ -301,7 +303,7 @@ class DealerFilter {
       const matchesCategory = categoryFilter === 'all' || category === categoryFilter;
       
       // State filter
-      const matchesState = stateFilter === 'all' || state.includes(stateFilter.replace('-', ' '));
+      const matchesState = stateFilter === 'all' || state === stateFilter;
       
       // District filter
       const matchesDistrict = districtFilter === 'all' || 
@@ -390,7 +392,9 @@ class DealerFilter {
   
   updateResultsCount(count = null) {
     if (count === null) {
-      count = Array.from(this.dealerCards).filter(card => 
+      // Use fresh DOM query instead of cached dealerCards
+      const dealerCards = document.querySelectorAll('.dealer-card');
+      count = Array.from(dealerCards).filter(card => 
         card.style.display !== 'none' && !card.classList.contains('filtered-out')
       ).length;
     }

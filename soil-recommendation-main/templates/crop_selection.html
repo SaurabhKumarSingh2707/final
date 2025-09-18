@@ -1,0 +1,890 @@
+{% extends "simple_base.html" %}
+
+{% block title %}KrishiVaani - Smart Crop Based Analysis{% endblock %}
+
+{% block content %}
+<div class="container mt-5 pt-4">
+    <div class="row">
+        <div class="col-lg-12 text-center mb-4">
+            <h1 class="display-5 fw-bold text-success">
+                <i class="fas fa-brain"></i> KrishiVaani Smart Crop Based Analysis
+            </h1>
+            <p class="lead">AI-powered crop recommendations based on soil conditions + detailed crop analysis</p>
+        </div>
+    </div>
+    
+    <!-- Tab Navigation -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <ul class="nav nav-pills nav-fill justify-content-center" id="analysisTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="crop-tab" data-bs-toggle="pill" data-bs-target="#crop-analysis" type="button" role="tab">
+                        <i class="fas fa-seedling"></i> Crop → Soil Analysis
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="soil-tab" data-bs-toggle="pill" data-bs-target="#soil-prediction" type="button" role="tab">
+                        <i class="fas fa-brain"></i> Soil → AI Crop Prediction
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="tab-content" id="analysisTabContent">
+        <!-- Crop Analysis Tab -->
+        <div class="tab-pane fade show active" id="crop-analysis" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-6 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fas fa-search"></i> Select Your Crop</h5>
+                        </div>
+                <div class="card-body">
+                    <form id="cropSelectionForm">
+                        <div class="mb-4">
+                            <label for="cropSelect" class="form-label">Choose a Crop Type</label>
+                            <select class="form-select form-select-lg" id="cropSelect" name="crop" required>
+                                <option value="">-- Select a Crop --</option>
+                                <optgroup label="Cereals">
+                                    <option value="rice">Rice</option>
+                                    <option value="maize">Maize (Corn)</option>
+                                </optgroup>
+                                <optgroup label="Legumes">
+                                    <option value="chickpea">Chickpea</option>
+                                    <option value="kidneybeans">Kidney Beans</option>
+                                    <option value="pigeonpeas">Pigeon Peas</option>
+                                    <option value="mothbeans">Moth Beans</option>
+                                    <option value="mungbean">Mung Bean</option>
+                                    <option value="blackgram">Black Gram</option>
+                                    <option value="lentil">Lentil</option>
+                                </optgroup>
+                                <optgroup label="Fruits">
+                                    <option value="pomegranate">Pomegranate</option>
+                                    <option value="banana">Banana</option>
+                                    <option value="mango">Mango</option>
+                                    <option value="grapes">Grapes</option>
+                                    <option value="watermelon">Watermelon</option>
+                                    <option value="muskmelon">Muskmelon</option>
+                                    <option value="apple">Apple</option>
+                                    <option value="orange">Orange</option>
+                                    <option value="papaya">Papaya</option>
+                                    <option value="coconut">Coconut</option>
+                                </optgroup>
+                                <optgroup label="Cash Crops">
+                                    <option value="cotton">Cotton</option>
+                                    <option value="jute">Jute</option>
+                                    <option value="coffee">Coffee</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-chart-line"></i> Get Soil Requirements
+                            </button>
+                        </div>
+                        <div class="d-grid mt-2">
+                            <button type="button" class="btn btn-outline-success" id="downloadCropPDF" style="display: none;">
+                                <i class="fas fa-file-pdf"></i> Download PDF Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+        </div>
+        
+        <!-- AI Soil Prediction Tab -->
+        <div class="tab-pane fade" id="soil-prediction" role="tabpanel">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="card shadow">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0"><i class="fas fa-brain"></i> AI Crop Prediction from Soil Parameters</h5>
+                        </div>
+                        <div class="card-body">
+                            <form id="soilPredictionForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="text-success"><i class="fas fa-flask"></i> Soil Nutrients</h6>
+                                        <div class="mb-3">
+                                            <label for="nitrogen" class="form-label">Nitrogen (N) - mg/kg</label>
+                                            <input type="number" class="form-control" id="nitrogen" name="N" step="0.1" required>
+                                            <small class="text-muted">Typical range: 0-140</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="phosphorus" class="form-label">Phosphorus (P) - mg/kg</label>
+                                            <input type="number" class="form-control" id="phosphorus" name="P" step="0.1" required>
+                                            <small class="text-muted">Typical range: 5-145</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="potassium" class="form-label">Potassium (K) - mg/kg</label>
+                                            <input type="number" class="form-control" id="potassium" name="K" step="0.1" required>
+                                            <small class="text-muted">Typical range: 5-205</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="ph" class="form-label">pH Level</label>
+                                            <input type="number" class="form-control" id="ph" name="ph" step="0.1" min="0" max="14" required>
+                                            <small class="text-muted">Typical range: 3.5-10.0</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-info"><i class="fas fa-cloud-sun"></i> Climate Conditions</h6>
+                                        <div class="mb-3">
+                                            <label for="temperature" class="form-label">Temperature (°C)</label>
+                                            <input type="number" class="form-control" id="temperature" name="temperature" step="0.1" required>
+                                            <small class="text-muted">Typical range: 8-44°C</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="humidity" class="form-label">Humidity (%)</label>
+                                            <input type="number" class="form-control" id="humidity" name="humidity" step="0.1" min="0" max="100" required>
+                                            <small class="text-muted">Typical range: 14-100%</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="rainfall" class="form-label">Annual Rainfall (mm)</label>
+                                            <input type="number" class="form-control" id="rainfall" name="rainfall" step="0.1" required>
+                                            <small class="text-muted">Typical range: 20-300mm</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-magic"></i> Get AI Crop Recommendations
+                                    </button>
+                                </div>
+                                <div class="d-grid mt-2">
+                                    <button type="button" class="btn btn-outline-primary" id="downloadAIPDF" style="display: none;">
+                                        <i class="fas fa-file-pdf"></i> Download AI Report
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results Section -->
+    <div class="row mt-4" id="resultsSection" style="display: none;">
+        <div class="col-lg-12">
+            <!-- Crop Info Header -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0" id="cropName">
+                        <i class="fas fa-leaf"></i> Crop Information
+                    </h4>
+                </div>
+                <div class="card-body" id="cropInfo">
+                    <!-- Crop basic info will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Soil Requirements -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-chart-bar"></i> Optimal Soil Requirements</h5>
+                </div>
+                <div class="card-body" id="soilRequirements">
+                    <!-- Soil requirements will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Fertilizer Recommendations -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-flask"></i> Recommended Fertilizers</h5>
+                </div>
+                <div class="card-body" id="fertilizerRecommendations">
+                    <!-- Fertilizer recommendations will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Growing Guidelines -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Growing Guidelines</h5>
+                </div>
+                <div class="card-body" id="growingGuidelines">
+                    <!-- Growing guidelines will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Indian Growing Locations -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt"></i> Best Growing Locations in India</h5>
+                </div>
+                <div class="card-body" id="indianLocations">
+                    <!-- Indian location data will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Spinner -->
+    <div class="row mt-4" id="loadingSpinner" style="display: none;">
+        <div class="col-lg-12 text-center">
+            <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Analyzing crop requirements...</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// Crop Selection Form Handler
+document.getElementById('cropSelectionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const cropSelect = document.getElementById('cropSelect');
+    const selectedCrop = cropSelect.value;
+    
+    if (!selectedCrop) {
+        alert('Please select a crop first.');
+        return;
+    }
+    
+    // Show loading spinner
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('resultsSection').style.display = 'none';
+    
+    // Send API request
+    fetch('/api/crop-soil-analysis', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ crop: selectedCrop })
+    })
+    .then(response => {
+        console.log('API Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`API Error: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(result => {
+        console.log('API Response data:', result);
+        document.getElementById('loadingSpinner').style.display = 'none';
+        
+        if (result.success) {
+            displayResults(result);
+        } else {
+            displayError(result.error || 'Unknown error occurred');
+        }
+    })
+    .catch(error => {
+        console.error('Crop analysis error:', error);
+        document.getElementById('loadingSpinner').style.display = 'none';
+        displayError(`Failed to get crop analysis: ${error.message}. Please try again.`);
+    });
+});
+
+function displayResults(result) {
+    // Update crop name header
+    document.getElementById('cropName').innerHTML = `<i class="fas fa-leaf"></i> ${result.crop} - Soil & Fertilizer Analysis`;
+    
+    // Display crop basic info
+    const cropInfoHtml = `
+        <div class="row">
+            <div class="col-md-4">
+                <div class="text-center">
+                    <i class="fas fa-seedling fa-3x text-success mb-3"></i>
+                    <h5>${result.crop}</h5>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <strong>Growing Season:</strong><br>
+                        <span class="badge bg-primary">${result.growing_season}</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <strong>Growth Duration:</strong><br>
+                        <span class="badge bg-info">${result.growth_duration}</span>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <strong>Suitable Soil Types:</strong><br>
+                        ${result.recommended_soil_types.map(soil => `<span class="badge bg-secondary me-1">${soil}</span>`).join('')}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('cropInfo').innerHTML = cropInfoHtml;
+    
+    // Display soil requirements
+    let soilHtml = '<div class="row">';
+    
+    for (const [param, details] of Object.entries(result.soil_requirements)) {
+        const [min, max] = details.optimal;
+        const paramName = getParameterDisplayName(param);
+        const statusColor = getParameterColor(param);
+        
+        soilHtml += `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card border-${statusColor}">
+                    <div class="card-header bg-${statusColor} text-white">
+                        <h6 class="mb-0">${paramName}</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-2">
+                            <span class="badge bg-${statusColor} fs-6">${min} - ${max} ${details.unit}</span>
+                        </div>
+                        <small class="text-muted">${details.description}</small>
+                        <div class="progress mt-2" style="height: 8px;">
+                            <div class="progress-bar bg-${statusColor}" style="width: 75%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    soilHtml += '</div>';
+    document.getElementById('soilRequirements').innerHTML = soilHtml;
+    
+    // Display fertilizer recommendations
+    let fertilizerHtml = '<div class="row">';
+    
+    result.fertilizer_recommendations.forEach((fertilizer, index) => {
+        const badgeClass = index === 0 ? 'primary' : index === 1 ? 'success' : 'info';
+        
+        fertilizerHtml += `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-header bg-${badgeClass} text-white">
+                        <h6 class="mb-0">${fertilizer.name}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            <strong>Composition:</strong><br>
+                            <span class="text-primary">${fertilizer.details.composition}</span>
+                        </p>
+                        <p class="card-text">
+                            <strong>Application Rate:</strong><br>
+                            <span class="badge bg-warning text-dark">${fertilizer.details.application_rate}</span>
+                        </p>
+                        <p class="card-text">
+                            <strong>Benefits:</strong><br>
+                            <small class="text-muted">${fertilizer.details.benefits}</small>
+                        </p>
+                        <p class="card-text">
+                            <strong>Best For:</strong><br>
+                            <small class="text-success">${fertilizer.details.best_for}</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    fertilizerHtml += '</div>';
+    
+    fertilizerHtml += `
+        <div class="alert alert-info">
+            <h6><i class="fas fa-calendar-check"></i> Application Schedule</h6>
+            <p class="mb-0">${result.fertilizer_schedule}</p>
+        </div>
+    `;
+    
+    document.getElementById('fertilizerRecommendations').innerHTML = fertilizerHtml;
+    
+    // Display growing guidelines
+    const guidelinesHtml = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-success"><i class="fas fa-thermometer-half"></i> Climate Requirements</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-temperature-high text-danger me-2"></i>
+                        <strong>Temperature:</strong> ${result.soil_requirements.temperature.optimal[0]}-${result.soil_requirements.temperature.optimal[1]} ${result.soil_requirements.temperature.unit}
+                    </li>
+                    <li><i class="fas fa-tint text-primary me-2"></i>
+                        <strong>Humidity:</strong> ${result.soil_requirements.humidity.optimal[0]}-${result.soil_requirements.humidity.optimal[1]} ${result.soil_requirements.humidity.unit}
+                    </li>
+                    <li><i class="fas fa-cloud-rain text-info me-2"></i>
+                        <strong>Rainfall:</strong> ${result.soil_requirements.rainfall.optimal[0]}-${result.soil_requirements.rainfall.optimal[1]} ${result.soil_requirements.rainfall.unit}
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6 class="text-primary"><i class="fas fa-seedling"></i> Growing Tips</h6>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-calendar text-success me-2"></i>
+                        <strong>Season:</strong> ${result.growing_season}
+                    </li>
+                    <li><i class="fas fa-clock text-warning me-2"></i>
+                        <strong>Duration:</strong> ${result.growth_duration}
+                    </li>
+                    <li><i class="fas fa-layer-group text-secondary me-2"></i>
+                        <strong>Soil:</strong> ${result.recommended_soil_types.join(', ')}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('growingGuidelines').innerHTML = guidelinesHtml;
+    
+    // Display Indian location information
+    displayIndianLocations(result.indian_locations, result.crop);
+    
+    // Show PDF download button and set up click handler
+    const downloadBtn = document.getElementById('downloadCropPDF');
+    downloadBtn.style.display = 'block';
+    downloadBtn.setAttribute('data-crop', result.crop.toLowerCase());
+    downloadBtn.onclick = () => downloadCropPDF(result.crop.toLowerCase());
+    
+    // Show results section
+    document.getElementById('resultsSection').style.display = 'block';
+    
+    // Scroll to results
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function getParameterDisplayName(param) {
+    const names = {
+        'N': 'Nitrogen (N)',
+        'P': 'Phosphorus (P)',
+        'K': 'Potassium (K)',
+        'ph': 'pH Level',
+        'temperature': 'Temperature',
+        'humidity': 'Humidity',
+        'rainfall': 'Rainfall'
+    };
+    return names[param] || param;
+}
+
+function getParameterColor(param) {
+    const colors = {
+        'N': 'success',
+        'P': 'primary',
+        'K': 'warning',
+        'ph': 'danger',
+        'temperature': 'info',
+        'humidity': 'secondary',
+        'rainfall': 'dark'
+    };
+    return colors[param] || 'primary';
+}
+
+function displayIndianLocations(locationData, cropName) {
+    if (!locationData || locationData.message) {
+        document.getElementById('indianLocations').innerHTML = `
+            <div class="alert alert-warning">
+                <i class="fas fa-info-circle"></i> Location data not available for ${cropName}
+            </div>
+        `;
+        return;
+    }
+    
+    let locationHtml = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6 class="text-primary"><i class="fas fa-map"></i> Major Growing States</h6>
+                <div class="mb-3">
+                    ${locationData.major_states.map(state => 
+                        `<span class="badge bg-primary me-1 mb-1">${state}</span>`
+                    ).join('')}
+                </div>
+                
+                <h6 class="text-success"><i class="fas fa-star"></i> Top Districts</h6>
+                <ul class="list-unstyled">
+                    ${locationData.top_districts.map(district => 
+                        `<li><i class="fas fa-map-pin text-success me-2"></i>${district}</li>`
+                    ).join('')}
+                </ul>
+                
+                <h6 class="text-info"><i class="fas fa-chart-pie"></i> Production Share</h6>
+                <p class="small">${locationData.production_share}</p>
+            </div>
+            
+            <div class="col-md-6">
+                <h6 class="text-warning"><i class="fas fa-globe"></i> Agro-Climatic Zones</h6>
+                <div class="mb-3">
+                    ${locationData.agro_climatic_zones.map(zone => 
+                        `<span class="badge bg-warning text-dark me-1 mb-1">${zone}</span>`
+                    ).join('')}
+                </div>
+                
+                ${locationData.best_regions ? `
+                <h6 class="text-secondary"><i class="fas fa-trophy"></i> Best Regions</h6>
+                <div class="accordion" id="regionAccordion">
+                    ${Object.entries(locationData.best_regions).map(([category, regions], index) => `
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="heading${index}">
+                            <button class="accordion-button ${index === 0 ? '' : 'collapsed'}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}">
+                                ${category.replace('_', ' ').toUpperCase()}
+                            </button>
+                        </h2>
+                        <div id="collapse${index}" class="accordion-collapse collapse ${index === 0 ? 'show' : ''}" data-bs-parent="#regionAccordion">
+                            <div class="accordion-body">
+                                ${Array.isArray(regions) ? 
+                                    regions.map(region => `<span class="badge bg-secondary me-1">${region}</span>`).join('') :
+                                    `<small>${regions}</small>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+            </div>
+        </div>
+        
+        <div class="alert alert-success mt-3">
+            <h6><i class="fas fa-lightbulb"></i> Location Recommendation</h6>
+            <p class="mb-0">Based on your crop selection of <strong>${cropName}</strong>, consider these regions for optimal growth conditions and market access. States like <strong>${locationData.major_states.slice(0, 3).join(', ')}</strong> have proven track records for successful cultivation.</p>
+        </div>
+    `;
+    
+    document.getElementById('indianLocations').innerHTML = locationHtml;
+}
+
+function downloadCropPDF(cropName) {
+    console.log('📋 Downloading PDF for crop:', cropName);
+    
+    // Show loading state
+    const btn = document.getElementById('downloadCropPDF');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating PDF...';
+    btn.disabled = true;
+    
+    // Send request to generate PDF
+    fetch('/api/generate-crop-report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ crop: cropName })
+    })
+    .then(response => {
+        console.log('📋 PDF response received:', response.status);
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error(`Failed to generate PDF: ${response.status} ${response.statusText}`);
+    })
+    .then(blob => {
+        console.log('📋 PDF blob received, size:', blob.size);
+        
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Crop_Analysis_${cropName}_${new Date().getTime()}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        console.log('📋 PDF download initiated');
+        
+        // Reset button
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    })
+    .catch(error => {
+        console.error('📋 PDF download error:', error);
+        alert('Failed to generate PDF: ' + error.message);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+
+function downloadAIPDF(soilParams) {
+    // Show loading state
+    const btn = document.getElementById('downloadAIPDF');
+    const originalText = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating AI Report...';
+    btn.disabled = true;
+    
+    // Send request to generate PDF
+    fetch('/api/generate-ai-report', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(soilParams)
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.blob();
+        }
+        throw new Error('Failed to generate AI report');
+    })
+    .then(blob => {
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `AI_Crop_Predictions_${new Date().getTime()}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        // Reset button
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    })
+    .catch(error => {
+        alert('Failed to generate AI report: ' + error.message);
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+    });
+}
+
+function displayError(errorMessage) {
+    const html = `
+        <div class="alert alert-danger">
+            <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+            <p>${errorMessage}</p>
+        </div>
+    `;
+    
+    document.getElementById('cropInfo').innerHTML = html;
+    document.getElementById('resultsSection').style.display = 'block';
+}
+
+// Soil Prediction Form Handler
+document.getElementById('soilPredictionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Hide download button when starting new prediction
+    document.getElementById('downloadAIPDF').style.display = 'none';
+    
+    const formData = new FormData(e.target);
+    const soilParams = {};
+    
+    // Get all form values
+    for (let [key, value] of formData.entries()) {
+        soilParams[key] = parseFloat(value);
+    }
+    
+    // Show loading
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('resultsSection').style.display = 'none';
+    
+    // Send API request for AI prediction
+    fetch('/api/soil-to-crop-prediction', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(soilParams)
+    })
+    .then(response => {
+        console.log('AI API Response status:', response.status);
+        if (!response.ok) {
+            throw new Error(`AI API Error: ${response.status} ${response.statusText}`);
+        }
+        return response.json();
+    })
+    .then(result => {
+        console.log('AI API Response data:', result);
+        document.getElementById('loadingSpinner').style.display = 'none';
+        
+        if (result.success) {
+            displayAIPredictionResults(result);
+        } else {
+            displayError(result.error || 'Unknown AI prediction error occurred');
+        }
+    })
+    .catch(error => {
+        console.error('AI prediction error:', error);
+        document.getElementById('loadingSpinner').style.display = 'none';
+        displayError(`Failed to get AI predictions: ${error.message}. Please try again.`);
+    });
+});
+
+function displayAIPredictionResults(result) {
+    // Update crop name header
+    document.getElementById('cropName').innerHTML = `<i class="fas fa-brain"></i> AI Crop Recommendations - Best Match: ${result.best_crop}`;
+    
+    // Display input parameters
+    const inputParamsHtml = `
+        <div class="row">
+            <div class="col-12">
+                <h6><i class="fas fa-chart-line"></i> Your Soil Analysis Input</h6>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><strong>Nitrogen (N):</strong> ${result.input_parameters.N} mg/kg</li>
+                            <li><strong>Phosphorus (P):</strong> ${result.input_parameters.P} mg/kg</li>
+                            <li><strong>Potassium (K):</strong> ${result.input_parameters.K} mg/kg</li>
+                            <li><strong>pH Level:</strong> ${result.input_parameters.ph}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><strong>Temperature:</strong> ${result.input_parameters.temperature}°C</li>
+                            <li><strong>Humidity:</strong> ${result.input_parameters.humidity}%</li>
+                            <li><strong>Rainfall:</strong> ${result.input_parameters.rainfall} mm</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('cropInfo').innerHTML = inputParamsHtml;
+    
+    // Display AI recommendations
+    let recommendationsHtml = '<div class="row">';
+    
+    result.recommendations.forEach((rec, index) => {
+        const badgeClass = index === 0 ? 'success' : index === 1 ? 'primary' : index === 2 ? 'info' : 'secondary';
+        const confidenceClass = rec.probability > 0.5 ? 'success' : rec.probability > 0.2 ? 'warning' : 'secondary';
+        
+        recommendationsHtml += `
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card border-${badgeClass}">
+                    <div class="card-header bg-${badgeClass} text-white">
+                        <h6 class="mb-0">
+                            <i class="fas fa-trophy${index === 0 ? '' : index === 1 ? '-alt' : '-award'}"></i> 
+                            ${rec.crop}
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <span class="badge bg-${confidenceClass} fs-6">${rec.confidence} Confidence</span>
+                        </div>
+                        
+                        ${rec.details ? `
+                            <div class="mt-3">
+                                <h6 class="text-success"><i class="fas fa-seedling"></i> Growing Info</h6>
+                                <p><strong>Season:</strong> ${rec.details.growing_season}</p>
+                                <p><strong>Duration:</strong> ${rec.details.growth_duration}</p>
+                                
+                                <h6 class="text-primary"><i class="fas fa-chart-bar"></i> Ideal Conditions</h6>
+                                <small>
+                                    <strong>N:</strong> ${rec.details.soil_requirements.N.optimal[0]}-${rec.details.soil_requirements.N.optimal[1]} mg/kg<br>
+                                    <strong>P:</strong> ${rec.details.soil_requirements.P.optimal[0]}-${rec.details.soil_requirements.P.optimal[1]} mg/kg<br>
+                                    <strong>K:</strong> ${rec.details.soil_requirements.K.optimal[0]}-${rec.details.soil_requirements.K.optimal[1]} mg/kg<br>
+                                    <strong>pH:</strong> ${rec.details.soil_requirements.ph.optimal[0]}-${rec.details.soil_requirements.ph.optimal[1]}
+                                </small>
+                            </div>
+                        ` : '<p class="text-muted">Details not available</p>'}
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    recommendationsHtml += '</div>';
+    document.getElementById('soilRequirements').innerHTML = recommendationsHtml;
+    
+    // Display model insights
+    const modelInfoHtml = `
+        <div class="alert alert-info">
+            <h6><i class="fas fa-info-circle"></i> AI Model Insights</h6>
+            <p><strong>Analysis based on ${result.model_info.total_crops} different crop types</strong></p>
+            <p class="mb-0"><small>Most important factors for prediction: Rainfall, Humidity, Potassium, Phosphorus</small></p>
+        </div>
+    `;
+    document.getElementById('fertilizerRecommendations').innerHTML = modelInfoHtml;
+    
+    // Clear growing guidelines for AI predictions
+    document.getElementById('growingGuidelines').innerHTML = `
+        <div class="alert alert-success">
+            <h6><i class="fas fa-lightbulb"></i> Next Steps</h6>
+            <p>Based on your soil conditions, <strong>${result.best_crop}</strong> is the most suitable crop.</p>
+            <p class="mb-0">Switch to the "Crop → Soil Analysis" tab and select "${result.best_crop}" to get detailed growing guidelines and fertilizer recommendations.</p>
+        </div>
+    `;
+    
+    // Display location info for top recommendation if available
+    const topRecommendation = result.recommendations[0];
+    if (topRecommendation && topRecommendation.details) {
+        // For AI predictions, we can show a simplified location message
+        document.getElementById('indianLocations').innerHTML = `
+            <div class="alert alert-info">
+                <h6><i class="fas fa-map-marker-alt"></i> Location Information</h6>
+                <p class="mb-0">For detailed location recommendations for <strong>${result.best_crop}</strong>, please use the "Crop → Soil Analysis" tab to get comprehensive regional growing information for India.</p>
+            </div>
+        `;
+    } else {
+        document.getElementById('indianLocations').innerHTML = `
+            <div class="alert alert-warning">
+                <h6><i class="fas fa-info-circle"></i> Location Data</h6>
+                <p class="mb-0">Use the "Crop → Soil Analysis" tab for detailed Indian growing location information.</p>
+            </div>
+        `;
+    }
+    
+    // Show results section
+    document.getElementById('resultsSection').style.display = 'block';
+    
+    // Show download button and set up click handler
+    const downloadBtn = document.getElementById('downloadAIPDF');
+    downloadBtn.style.display = 'block';
+    
+    // Remove any existing click handlers
+    downloadBtn.replaceWith(downloadBtn.cloneNode(true));
+    const newDownloadBtn = document.getElementById('downloadAIPDF');
+    
+    // Add click handler with the current soil parameters
+    newDownloadBtn.addEventListener('click', function() {
+        downloadAIPDF(result.input_parameters);
+    });
+    
+    // Scroll to results
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Debug function to test API endpoints
+function testApiEndpoints() {
+    console.log('Testing API endpoints...');
+    
+    // Test crop analysis endpoint
+    fetch('/api/crop-soil-analysis', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({crop: 'rice'})
+    })
+    .then(response => {
+        console.log('Crop API test - Status:', response.status);
+        return response.json();
+    })
+    .then(data => console.log('Crop API test - Data:', data))
+    .catch(error => console.error('Crop API test error:', error));
+    
+    // Test AI prediction endpoint
+    fetch('/api/soil-to-crop-prediction', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            N: 90,
+            P: 42,
+            K: 43,
+            ph: 6.5,
+            temperature: 25,
+            humidity: 80,
+            rainfall: 200
+        })
+    })
+    .then(response => {
+        console.log('AI API test - Status:', response.status);
+        return response.json();
+    })
+    .then(data => console.log('AI API test - Data:', data))
+    .catch(error => console.error('AI API test error:', error));
+}
+
+// Run test on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Page loaded, testing API endpoints...');
+    setTimeout(testApiEndpoints, 1000); // Wait 1 second after page load
+});
+</script>
+{% endblock %}

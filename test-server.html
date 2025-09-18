@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Disease Prediction Server Test</title>
+</head>
+<body>
+    <h1>Disease Prediction Server Test</h1>
+    <button onclick="testServer()">Test Server Connection</button>
+    <div id="result"></div>
+
+    <script>
+        async function testServer() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '<p>Testing connection...</p>';
+            
+            try {
+                const response = await fetch('http://127.0.0.1:5000/health', {
+                    method: 'GET',
+                    mode: 'cors'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    resultDiv.innerHTML = `
+                        <h3 style="color: green;">✅ Server is working!</h3>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `<h3 style="color: red;">❌ Server responded with status: ${response.status}</h3>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<h3 style="color: red;">❌ Connection failed: ${error.message}</h3>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -10,189 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const guideIdealRainfall = document.getElementById("guide-ideal-rainfall");
   const guidePostHarvest = document.getElementById("guide-post-harvest");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  // Form submission is handled below after validation setup
 
-    const formData = new FormData(form);
-    const data = {};
-    formData.forEach((value, key) => {
-      const el = document.getElementsByName(key)[0];
-      data[key] = el.type === "number" ? parseFloat(value) : value;
-    });
-
-    // Show loading message
-    displayLoading();
-
-    // Generate a prompt for the Gemini API
-    const prompt = `Act as an expert agricultural AI. Based on the following farm conditions, recommend the best crop and provide a detailed farming guide.
-        - Soil pH: ${data.pH}
-        - Temperature: ${data.Temperature}°C
-        - Rainfall: ${data.Rainfall} mm
-        - Soil Type: ${data.Soil_Type}
-        - Season: ${data.Season}
-        - Market Demand: ${data.Market_Demand}
-        - Fertilizer Used: ${data.Fertilizer_Used}
-        - Pest Issue: ${data.Pest_Issue}
-        - Irrigation Method: ${data.Irrigation_Method}
-
-        Provide the response in a JSON format with the following schema. Use natural language and markdown formatting (like **bold** or lists) where appropriate for readability.
-        
-        {
-          "crop": "Recommended Crop Name",
-          "guide": {
-            "title": "Farming Guide for [Crop Name]",
-            "timeline": "Detailed timeline (e.g., planting season, harvest time).",
-            "how_to_plant": "Step-by-step instructions on how to plant the crop.",
-            "fertilizer": "A plan for fertilizer application.",
-            "ideal_rainfall": "The ideal rainfall amount and schedule.",
-            "post_harvest": "Instructions for post-harvest care and storage."
-          }
-        }
-        `;
-
-    try {
-      // Make the API call to Gemini
-      const result = await generateContentWithRetry(prompt);
-
-      // Check for valid response structure
-      if (result && result.crop && result.guide) {
-        displayResultAndGuide(result.crop, result.guide);
-      } else {
-        displayError(
-          "Failed to get a valid response from the AI. Please try again."
-        );
-      }
-    } catch (error) {
-      console.error("Error calling Gemini API:", error);
-      displayError(
-        "Could not connect to the AI service. Please check your network connection."
-      );
-    }
-  });
-
-  /**
-   * Calls the Gemini API with exponential backoff.
-   * @param {string} prompt The text prompt for the model.
-   * @returns {Promise<object>} The parsed JSON response.
-   */
-  async function generateContentWithRetry(prompt, retries = 3, delay = 1000) {
-    let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
-    const payload = {
-      contents: chatHistory,
-      generationConfig: {
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: "OBJECT",
-          properties: {
-            crop: { type: "STRING" },
-            guide: {
-              type: "OBJECT",
-              properties: {
-                title: { type: "STRING" },
-                timeline: { type: "STRING" },
-                how_to_plant: { type: "STRING" },
-                fertilizer: { type: "STRING" },
-                ideal_rainfall: { type: "STRING" },
-                post_harvest: { type: "STRING" },
-              },
-            },
-          },
-        },
-      },
-    };
-
-    const apiKey = "";
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-    for (let i = 0; i < retries; i++) {
-      try {
-        const response = await fetch(apiUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-
-        if (response.status === 429 && i < retries - 1) {
-          await new Promise((res) => setTimeout(res, delay));
-          delay *= 2; // Exponential backoff
-          continue;
-        }
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`API error: ${JSON.stringify(errorData)}`);
-        }
-
-        const result = await response.json();
-        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!jsonText) {
-          throw new Error("Invalid response format from API.");
-        }
-
-        return JSON.parse(jsonText);
-      } catch (error) {
-        if (i === retries - 1) {
-          console.error(
-            "Failed to generate content after multiple retries:",
-            error
-          );
-          throw error;
-        }
-      }
-    }
-  }
-
-  /**
-   * Displays a loading message in the result container.
-   */
-  function displayLoading() {
-    resultContainer.classList.remove("hidden");
-    resultText.textContent = "Curating your personalized crop guide...";
-    guideContainer.classList.add("hidden");
-  }
-
-  /**
-   * Displays an error message in the result container.
-   * @param {string} message The error message to display.
-   */
-  function displayError(message) {
-    resultContainer.classList.remove("hidden");
-    resultText.textContent = message;
-    guideContainer.classList.add("hidden");
-  }
-
-  /**
-   * Simple function to convert basic markdown (like **bold**) to HTML.
-   * @param {string} text The text to format.
-   * @returns {string} The formatted HTML string.
-   */
-  function formatAIResponse(text) {
-    if (!text) return "";
-    let formattedText = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-    formattedText = formattedText.replace(/\n/g, "<br>");
-    return formattedText;
-  }
-
-  /**
-   * Populates the result and guide sections with the API response.
-   * @param {string} cropName The recommended crop name.
-   * @param {object} guide The guide object from the API response.
-   */
-  function displayResultAndGuide(cropName, guide) {
-    resultContainer.classList.remove("hidden");
-    resultText.textContent = cropName;
-
-    guideTitle.textContent = guide.title;
-
-    // Use the new formatting function and .innerHTML
-    guideTimeline.innerHTML = formatAIResponse(guide.timeline);
-    guideHowToPlant.innerHTML = formatAIResponse(guide.how_to_plant);
-    guideFertilizer.innerHTML = formatAIResponse(guide.fertilizer);
-    guideIdealRainfall.innerHTML = formatAIResponse(guide.ideal_rainfall);
-    guidePostHarvest.innerHTML = formatAIResponse(guide.post_harvest);
-
-    guideContainer.classList.remove("hidden");
-  }
+  // Crop recommendation system is handled in form submission below
 });
 
 let scene, camera, renderer, particles;
@@ -342,23 +162,27 @@ form.addEventListener("submit", function (e) {
   submitBtn.disabled = true;
 
   setTimeout(() => {
-    const mockCrop = "Tomato";
+    // Get form data for intelligent crop recommendation
+    const formData = new FormData(form);
+    const data = {};
+    formData.forEach((value, key) => {
+      const el = document.getElementsByName(key)[0];
+      data[key] = el.type === "number" ? parseFloat(value) : value;
+    });
 
-    document.getElementById("result-text").textContent = mockCrop;
+    // Intelligent crop recommendation based on conditions
+    const recommendedCrop = getRecommendedCrop(data);
+
+    document.getElementById("result-text").textContent = recommendedCrop.name;
     document.getElementById(
       "guide-title"
-    ).textContent = `Complete Growing Guide for ${mockCrop}`;
+    ).textContent = `Complete Growing Guide for ${recommendedCrop.name}`;
 
-    document.getElementById("guide-timeline").textContent =
-      "Plant: March-April | Harvest: June-July (90-120 days growth cycle)";
-    document.getElementById("guide-how-to-plant").textContent =
-      "Prepare seedbed, sow seeds 2-3cm deep with 30cm spacing between rows. Transplant seedlings after 4-6 weeks.";
-    document.getElementById("guide-fertilizer").textContent =
-      "Apply NPK (19:19:19) at planting, followed by weekly liquid fertilizer during growing season.";
-    document.getElementById("guide-ideal-rainfall").textContent =
-      "Requires 400-600mm water throughout season. Drip irrigation recommended for optimal results.";
-    document.getElementById("guide-post-harvest").textContent =
-      "Harvest when fruits are firm and fully colored. Store at 12-15°C. Market within 7-10 days for best prices.";
+    document.getElementById("guide-timeline").innerHTML = recommendedCrop.timeline;
+    document.getElementById("guide-how-to-plant").innerHTML = recommendedCrop.howToPlant;
+    document.getElementById("guide-fertilizer").innerHTML = recommendedCrop.fertilizer;
+    document.getElementById("guide-ideal-rainfall").innerHTML = recommendedCrop.idealRainfall;
+    document.getElementById("guide-post-harvest").innerHTML = recommendedCrop.postHarvest;
 
     resultContainer.classList.remove("hidden");
     resultContainer.scrollIntoView({ behavior: "smooth" });
@@ -367,6 +191,209 @@ form.addEventListener("submit", function (e) {
     submitBtn.disabled = false;
   }, 2000);
 });
+
+// Intelligent crop recommendation function
+function getRecommendedCrop(data) {
+  const { pH, Temperature, Rainfall, Soil_Type, Season, Market_Demand, Fertilizer_Used, Pest_Issue, Irrigation_Method } = data;
+  
+  // Expanded crop database with growing conditions
+  const crops = {
+    wheat: {
+      name: "Wheat",
+      conditions: { minPH: 6.0, maxPH: 7.5, minTemp: 15, maxTemp: 25, minRain: 300, maxRain: 750, seasons: ["Winter"], soils: ["Loamy", "Clay"] },
+      timeline: "<strong>Planting:</strong> November-December<br><strong>Harvest:</strong> March-April (120-150 days)<br><strong>Best Time:</strong> Rabi season",
+      howToPlant: "• Prepare field with deep plowing<br>• Seed rate: 100-125 kg/hectare<br>• Sowing depth: 3-5 cm<br>• Row spacing: 20-23 cm<br>• Apply basal fertilizer before sowing",
+      fertilizer: "<strong>Basal:</strong> DAP 100 kg/ha<br><strong>Top dressing:</strong> Urea 50 kg at tillering, 50 kg at heading<br><strong>Micronutrients:</strong> Zinc sulphate 25 kg/ha",
+      idealRainfall: "<strong>Total:</strong> 450-650 mm<br><strong>Critical stages:</strong> Crown root initiation, tillering, grain filling<br><strong>Irrigation:</strong> 4-6 irrigations needed",
+      postHarvest: "• Harvest at 20-25% moisture<br>• Dry to 12% moisture for storage<br>• Store in cool, dry place<br>• Market timing: April-May for best prices"
+    },
+    rice: {
+      name: "Rice",
+      conditions: { minPH: 5.5, maxPH: 7.0, minTemp: 20, maxTemp: 35, minRain: 1000, maxRain: 2500, seasons: ["Monsoon"], soils: ["Clay", "Loamy"] },
+      timeline: "<strong>Planting:</strong> June-July (Kharif)<br><strong>Harvest:</strong> November-December (120-140 days)<br><strong>Transplanting:</strong> 20-25 days after sowing",
+      howToPlant: "• Prepare nursery beds<br>• Seed rate: 20-25 kg/hectare<br>• Transplant 2-3 seedlings per hill<br>• Spacing: 20x15 cm<br>• Maintain 2-5 cm water level",
+      fertilizer: "<strong>NPK:</strong> 120:60:40 kg/ha<br><strong>Application:</strong> 50% N basal, 25% at tillering, 25% at panicle initiation<br><strong>Organic:</strong> 5-10 tonnes FYM/ha",
+      idealRainfall: "<strong>Total:</strong> 1200-1800 mm<br><strong>Distribution:</strong> Well-distributed throughout season<br><strong>Water depth:</strong> 2-5 cm in field",
+      postHarvest: "• Harvest at proper maturity (80% grains golden)<br>• Dry to 14% moisture<br>• Store in moisture-proof containers<br>• Market: November-February"
+    },
+    cotton: {
+      name: "Cotton",
+      conditions: { minPH: 6.0, maxPH: 8.0, minTemp: 20, maxTemp: 35, minRain: 500, maxRain: 1000, seasons: ["Monsoon", "Summer"], soils: ["Black", "Loamy"] },
+      timeline: "<strong>Planting:</strong> April-June<br><strong>Harvest:</strong> October-January (150-180 days)<br><strong>Picking:</strong> Multiple harvests",
+      howToPlant: "• Deep plowing and field preparation<br>• Seed rate: 1.5-2.5 kg/hectare<br>• Spacing: 90-120 cm between rows<br>• Plant 2-3 seeds per hill<br>• Maintain plant population 55,000-75,000/ha",
+      fertilizer: "<strong>NPK:</strong> 100:50:50 kg/ha<br><strong>Split application:</strong> 25% at sowing, 50% at squaring, 25% at flowering<br><strong>Micronutrients:</strong> Boron, Zinc application",
+      idealRainfall: "<strong>Total:</strong> 600-800 mm<br><strong>Distribution:</strong> 75% during vegetative growth<br><strong>Dry period:</strong> Required during boll opening",
+      postHarvest: "• First picking at 60% boll opening<br>• Multiple pickings every 15 days<br>• Proper drying and ginning<br>• Store in moisture-free environment"
+    },
+    tomato: {
+      name: "Tomato",
+      conditions: { minPH: 6.0, maxPH: 7.0, minTemp: 18, maxTemp: 29, minRain: 400, maxRain: 800, seasons: ["Winter", "Summer"], soils: ["Loamy", "Sandy"] },
+      timeline: "<strong>Planting:</strong> October-November (Winter), February-March (Summer)<br><strong>Harvest:</strong> 90-120 days<br><strong>Transplanting:</strong> 4-5 weeks after sowing",
+      howToPlant: "• Raise seedlings in nursery<br>• Transplant at 4-5 leaf stage<br>• Spacing: 60x45 cm<br>• Provide support with stakes<br>• Mulching recommended",
+      fertilizer: "<strong>NPK:</strong> 150:100:100 kg/ha<br><strong>Application:</strong> 50% basal, remaining in splits<br><strong>Organic:</strong> 20-25 tonnes FYM/ha<br><strong>Calcium:</strong> For preventing blossom end rot",
+      idealRainfall: "<strong>Total:</strong> 500-750 mm<br><strong>Distribution:</strong> Avoid excess during flowering<br><strong>Irrigation:</strong> Drip irrigation preferred<br><strong>Water requirement:</strong> 400-600 mm",
+      postHarvest: "• Harvest at breaker stage<br>• Multiple harvests every 3-4 days<br>• Cool storage at 12-15°C<br>• Market within 7-10 days for fresh market"
+    },
+    maize: {
+      name: "Maize",
+      conditions: { minPH: 6.0, maxPH: 7.5, minTemp: 20, maxTemp: 35, minRain: 400, maxRain: 800, seasons: ["Monsoon", "Summer"], soils: ["Loamy", "Sandy"] },
+      timeline: "<strong>Planting:</strong> June-July (Kharif), February-March (Rabi)<br><strong>Harvest:</strong> 90-120 days<br><strong>Silking:</strong> 55-65 days",
+      howToPlant: "• Field preparation with deep plowing<br>• Seed rate: 18-20 kg/hectare<br>• Spacing: 60x20 cm<br>• Depth: 3-4 cm<br>• Gap filling within 10 days",
+      fertilizer: "<strong>NPK:</strong> 120:60:40 kg/ha<br><strong>Nitrogen splits:</strong> 1/3 basal, 1/3 at knee high, 1/3 at tasseling<br><strong>Organic:</strong> 8-10 tonnes FYM/ha",
+      idealRainfall: "<strong>Total:</strong> 500-750 mm<br><strong>Critical stages:</strong> Tasseling and silking<br><strong>Distribution:</strong> Well-distributed growth period",
+      postHarvest: "• Harvest when moisture content is 20-25%<br>• Dry to 14% for storage<br>• Proper storage to prevent pest damage<br>• Value addition opportunities available"
+    },
+    sugarcane: {
+      name: "Sugarcane",
+      conditions: { minPH: 6.5, maxPH: 7.5, minTemp: 26, maxTemp: 33, minRain: 1000, maxRain: 1500, seasons: ["Monsoon"], soils: ["Loamy", "Clay"] },
+      timeline: "<strong>Planting:</strong> February-March, October-November<br><strong>Harvest:</strong> 12-18 months<br><strong>Ratoon:</strong> 2-3 crops possible",
+      howToPlant: "• Deep plowing and land preparation<br>• Use 3-bud setts<br>• Spacing: 90-120 cm between rows<br>• Plant in furrows 8-10 cm deep<br>• Gap filling within 30 days",
+      fertilizer: "<strong>NPK:</strong> 280:90:90 kg/ha<br><strong>Application:</strong> Split doses at planting, 45 days, and 90 days<br><strong>Micronutrients:</strong> Iron, Zinc, Manganese",
+      idealRainfall: "<strong>Total:</strong> 1200-1500 mm<br><strong>Distribution:</strong> Throughout growing season<br><strong>Critical:</strong> High water requirement crop",
+      postHarvest: "• Harvest at proper maturity (12-14 months)<br>• Cut close to ground level<br>• Transport to mill within 24-48 hours<br>• Ratoon management for next crop"
+    },
+    soybean: {
+      name: "Soybean",
+      conditions: { minPH: 6.0, maxPH: 7.0, minTemp: 20, maxTemp: 30, minRain: 450, maxRain: 700, seasons: ["Monsoon"], soils: ["Loamy", "Clay"] },
+      timeline: "<strong>Planting:</strong> June-July<br><strong>Harvest:</strong> October-November (90-120 days)<br><strong>Flowering:</strong> 35-45 days",
+      howToPlant: "• Field preparation with 2-3 plowings<br>• Seed rate: 75-80 kg/hectare<br>• Row spacing: 30-45 cm<br>• Seed treatment with Rhizobium<br>• Depth: 2-3 cm",
+      fertilizer: "<strong>NPK:</strong> 30:75:30 kg/ha (being legume, needs less N)<br><strong>Starter dose:</strong> 20 kg N/ha<br><strong>Rhizobium:</strong> Bacterial inoculation essential",
+      idealRainfall: "<strong>Total:</strong> 500-700 mm<br><strong>Distribution:</strong> Well-distributed, avoid waterlogging<br><strong>Critical stages:</strong> Flowering and pod filling",
+      postHarvest: "• Harvest when pods rattle<br>• Moisture content: 12-14%<br>• Proper drying and cleaning<br>• Store in pest-proof containers"
+    },
+    potato: {
+      name: "Potato",
+      conditions: { minPH: 5.5, maxPH: 6.5, minTemp: 15, maxTemp: 25, minRain: 400, maxRain: 600, seasons: ["Winter"], soils: ["Loamy", "Sandy"] },
+      timeline: "<strong>Planting:</strong> October-December<br><strong>Harvest:</strong> January-March (90-120 days)<br><strong>Earthing up:</strong> 2-3 times during growth",
+      howToPlant: "• Use certified seed tubers<br>• Cut tubers 2-3 days before planting<br>• Plant at 15-20 cm depth<br>• Row spacing: 50-60 cm<br>• Seed rate: 25-30 quintals/ha",
+      fertilizer: "<strong>NPK:</strong> 120:75:100 kg/ha<br><strong>Application:</strong> Full P&K + 1/3 N at planting, remaining N in 2 splits<br><strong>Organic:</strong> 20-25 tonnes FYM/ha",
+      idealRainfall: "<strong>Total:</strong> 500-700 mm<br><strong>Distribution:</strong> Uniform throughout crop period<br><strong>Avoid:</strong> Waterlogging conditions",
+      postHarvest: "• Harvest when plants turn yellow<br>• Cure in shade for 10-15 days<br>• Store at 2-4°C with 90-95% humidity<br>• Avoid exposure to light"
+    },
+    onion: {
+      name: "Onion",
+      conditions: { minPH: 6.0, maxPH: 7.5, minTemp: 15, maxTemp: 25, minRain: 350, maxRain: 650, seasons: ["Winter"], soils: ["Loamy", "Sandy"] },
+      timeline: "<strong>Planting:</strong> November-December<br><strong>Harvest:</strong> March-May (120-150 days)<br><strong>Transplanting:</strong> 6-8 weeks after sowing",
+      howToPlant: "• Raise seedlings in nursery<br>• Transplant at pencil thickness<br>• Spacing: 15x10 cm<br>• Plant at 2-3 cm depth<br>• Avoid deep planting",
+      fertilizer: "<strong>NPK:</strong> 100:50:50 kg/ha<br><strong>Application:</strong> Basal dose + top dressing at 30 and 60 days<br><strong>Sulphur:</strong> 40-50 kg/ha for quality bulbs",
+      idealRainfall: "<strong>Total:</strong> 400-500 mm<br><strong>Distribution:</strong> Uniform water supply needed<br><strong>Stop irrigation:</strong> 15-20 days before harvest",
+      postHarvest: "• Harvest when neck softens<br>• Cure in field for 4-5 days<br>• Store in well-ventilated area<br>• Market timing crucial for price"
+    },
+    chickpea: {
+      name: "Chickpea (Chana)",
+      conditions: { minPH: 6.5, maxPH: 7.5, minTemp: 20, maxTemp: 30, minRain: 300, maxRain: 500, seasons: ["Winter"], soils: ["Loamy", "Clay"] },
+      timeline: "<strong>Planting:</strong> October-November<br><strong>Harvest:</strong> March-April (120-140 days)<br><strong>Flowering:</strong> 45-60 days after sowing",
+      howToPlant: "• Seed treatment with Rhizobium<br>• Seed rate: 60-80 kg/hectare<br>• Row spacing: 30 cm<br>• Sowing depth: 3-4 cm<br>• Pre-irrigation recommended",
+      fertilizer: "<strong>NPK:</strong> 20:40:20 kg/ha (low N due to N-fixation)<br><strong>Starter dose:</strong> Important for nodulation<br><strong>Phosphorus:</strong> Critical for root development",
+      idealRainfall: "<strong>Total:</strong> 300-400 mm<br><strong>Distribution:</strong> Light showers preferred<br><strong>Avoid:</strong> Heavy rains during flowering and maturity",
+      postHarvest: "• Harvest when pods turn brown<br>• Thresh when moisture is 12-14%<br>• Store in moisture-proof containers<br>• High protein content crop"
+    },
+    mustard: {
+      name: "Mustard",
+      conditions: { minPH: 6.0, maxPH: 7.5, minTemp: 15, maxTemp: 25, minRain: 250, maxRain: 400, seasons: ["Winter"], soils: ["Loamy", "Clay"] },
+      timeline: "<strong>Planting:</strong> October-November<br><strong>Harvest:</strong> February-March (120-150 days)<br><strong>Flowering:</strong> 45-50 days",
+      howToPlant: "• Field preparation with 2-3 plowings<br>• Seed rate: 4-5 kg/hectare<br>• Row spacing: 30 cm<br>• Sowing depth: 2-3 cm<br>• Line sowing preferred",
+      fertilizer: "<strong>NPK:</strong> 80:40:40 kg/ha<br><strong>Application:</strong> Full dose at sowing or split N application<br><strong>Sulphur:</strong> 40-60 kg/ha for oil content",
+      idealRainfall: "<strong>Total:</strong> 300-400 mm<br><strong>Distribution:</strong> Light irrigation required<br><strong>Critical stage:</strong> Siliqua formation",
+      postHarvest: "• Harvest when siliquae turn yellow<br>• Dry properly before threshing<br>• Oil content: 35-42%<br>• Good market demand for oil"
+    },
+    barley: {
+      name: "Barley",
+      conditions: { minPH: 6.0, maxPH: 8.0, minTemp: 12, maxTemp: 22, minRain: 300, maxRain: 500, seasons: ["Winter"], soils: ["Loamy", "Sandy"] },
+      timeline: "<strong>Planting:</strong> November-December<br><strong>Harvest:</strong> April-May (120-140 days)<br><strong>Grain filling:</strong> 90-110 days",
+      howToPlant: "• Prepare fine seedbed<br>• Seed rate: 100 kg/hectare<br>• Row spacing: 22-23 cm<br>• Sowing depth: 3-4 cm<br>• Timely sowing important",
+      fertilizer: "<strong>NPK:</strong> 80:40:20 kg/ha<br><strong>Application:</strong> Basal + top dressing of N at tillering<br><strong>Micronutrients:</strong> Zinc and iron if deficient",
+      idealRainfall: "<strong>Total:</strong> 350-500 mm<br><strong>Water requirement:</strong> Less than wheat<br><strong>Tolerance:</strong> Better drought tolerance than wheat",
+      postHarvest: "• Harvest at proper maturity<br>• Dry to 12% moisture<br>• Used for malt, feed, and food<br>• Good market for brewing industry"
+    },
+    sunflower: {
+      name: "Sunflower",
+      conditions: { minPH: 6.0, maxPH: 7.5, minTemp: 20, maxTemp: 30, minRain: 400, maxRain: 650, seasons: ["Monsoon", "Winter"], soils: ["Loamy", "Sandy"] },
+      timeline: "<strong>Planting:</strong> June-July (Kharif), January-February (Rabi)<br><strong>Harvest:</strong> 90-120 days<br><strong>Flowering:</strong> 50-60 days",
+      howToPlant: "• Deep plowing for root development<br>• Seed rate: 8-10 kg/hectare<br>• Spacing: 60x30 cm<br>• Depth: 2-3 cm<br>• Single seed per hill",
+      fertilizer: "<strong>NPK:</strong> 60:90:40 kg/ha<br><strong>Application:</strong> Basal + side dressing at flower initiation<br><strong>Boron:</strong> 1 kg/ha for seed filling",
+      idealRainfall: "<strong>Total:</strong> 500-750 mm<br><strong>Distribution:</strong> Well-distributed during vegetative growth<br><strong>Avoid excess:</strong> During maturity",
+      postHarvest: "• Harvest when back of head turns brown<br>• Dry to 9-11% moisture<br>• Oil content: 38-48%<br>• High demand for cooking oil"
+    },
+    groundnut: {
+      name: "Groundnut (Peanut)",
+      conditions: { minPH: 6.0, maxPH: 7.0, minTemp: 25, maxTemp: 32, minRain: 500, maxRain: 750, seasons: ["Monsoon"], soils: ["Sandy", "Loamy"] },
+      timeline: "<strong>Planting:</strong> June-July<br><strong>Harvest:</strong> October-November (120-140 days)<br><strong>Flowering:</strong> 30-40 days, Pegging: 40-50 days",
+      howToPlant: "• Deep plowing and harrowing<br>• Seed rate: 120-140 kg/hectare<br>• Row spacing: 30 cm<br>• Depth: 3-4 cm<br>• Seed treatment with Rhizobium",
+      fertilizer: "<strong>NPK:</strong> 25:50:75 kg/ha<br><strong>Gypsum:</strong> 500 kg/ha at flowering for shell development<br><strong>Calcium:</strong> Essential for pod filling",
+      idealRainfall: "<strong>Total:</strong> 500-750 mm<br><strong>Distribution:</strong> Good rains during vegetative growth<br><strong>Pod development:</strong> Moderate moisture needed",
+      postHarvest: "• Harvest when leaves turn yellow<br>• Dry pods to 8-10% moisture<br>• Store in cool, dry place<br>• Oil content: 48-50%, protein: 25-28%"
+    },
+    millets: {
+      name: "Pearl Millet (Bajra)",
+      conditions: { minPH: 6.5, maxPH: 8.0, minTemp: 25, maxTemp: 35, minRain: 250, maxRain: 500, seasons: ["Monsoon"], soils: ["Sandy", "Loamy"] },
+      timeline: "<strong>Planting:</strong> June-July<br><strong>Harvest:</strong> September-October (75-90 days)<br><strong>Flowering:</strong> 45-55 days",
+      howToPlant: "• Minimum tillage required<br>• Seed rate: 4-5 kg/hectare<br>• Row spacing: 45 cm<br>• Depth: 2-3 cm<br>• Drought tolerant crop",
+      fertilizer: "<strong>NPK:</strong> 40:20:0 kg/ha<br><strong>Application:</strong> Light fertilizer requirement<br><strong>Organic matter:</strong> Benefits from FYM application",
+      idealRainfall: "<strong>Total:</strong> 300-500 mm<br><strong>Tolerance:</strong> Excellent drought tolerance<br><strong>Water stress:</strong> Can withstand dry spells",
+      postHarvest: "• Harvest when grains are hard<br>• Dry to 12% moisture<br>• Nutritious - high in iron and protein<br>• Growing demand for health foods"
+    }
+  };
+
+  // Scoring system to find best crop match
+  let bestCrop = null;
+  let bestScore = -1;
+
+  Object.values(crops).forEach(crop => {
+    let score = 0;
+
+    // pH compatibility (high weight)
+    if (pH >= crop.conditions.minPH && pH <= crop.conditions.maxPH) {
+      score += 25;
+    } else {
+      score -= 10;
+    }
+
+    // Temperature compatibility (high weight)
+    if (Temperature >= crop.conditions.minTemp && Temperature <= crop.conditions.maxTemp) {
+      score += 25;
+    } else {
+      score -= 10;
+    }
+
+    // Rainfall compatibility (high weight)
+    if (Rainfall >= crop.conditions.minRain && Rainfall <= crop.conditions.maxRain) {
+      score += 20;
+    } else {
+      score -= 8;
+    }
+
+    // Season compatibility (medium weight)
+    if (crop.conditions.seasons.includes(Season)) {
+      score += 15;
+    } else {
+      score -= 5;
+    }
+
+    // Soil type compatibility (medium weight)
+    if (crop.conditions.soils.includes(Soil_Type)) {
+      score += 10;
+    } else {
+      score -= 3;
+    }
+
+    // Market demand bonus (low weight)
+    if (Market_Demand === "High") score += 5;
+    else if (Market_Demand === "Medium") score += 3;
+
+    // Irrigation method bonus
+    if (Irrigation_Method === "Drip" && (crop.name === "Tomato" || crop.name === "Cotton")) score += 3;
+    if (Irrigation_Method === "Canal" && (crop.name === "Rice" || crop.name === "Sugarcane")) score += 3;
+
+    if (score > bestScore) {
+      bestScore = score;
+      bestCrop = crop;
+    }
+  });
+
+  // Fallback to tomato if no good match (shouldn't happen with proper scoring)
+  return bestCrop || crops.tomato;
+}
 
 updateProgress();
 
